@@ -9,7 +9,8 @@ git init
 - 一些基础设置
 
 ```c
-git config --global user.name "用户名" //设置
+git config --global user.name "用户名" //设置本地用户名
+git config --global user.email "电子邮件" //设置EMAIL
 ```
 
 

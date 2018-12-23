@@ -2,6 +2,13 @@
 
 ### Eclipse使用
 
+- 常用快捷键
+
+```java
+CTRL+ALT+↓ //向下复制一行
+CTRL+ALT+↑ //向上复制一行
+```
+
 - 如何生成jar包并导入项目
 
   - jar的概念：jar是多个class文件的压缩包
@@ -16,11 +23,15 @@
 
 ### 注释与API文档生成
 
--  //   单行注释     将单行注释符后的一整行声明为注释，只能声明一行
-- /* ...... */  多行注释  将多行注释符中间的内容声明为注释，可以声明多行
-- /** ...... */  文档注释  一般用于变量，方法，接口以及类本身前面。作用一是解释注释后的语句块的作用；而是便于生成Java API文档。
+- 注释标记
+  - //   单行注释     将单行注释符后的一整行声明为注释，只能声明一行
+  - /* ...... */  多行注释  将多行注释符中间的内容声明为注释，可以声明多行
+  - /** ...... */  文档注释  一般用于变量，方法，接口以及类本身前面。作用一是解释注释后的语句块的作用；而是便于生成Java API文档。
 
-​     文档注释的使用为：在要添加文档注释的代码块的上一行敲下
+    - 文档注释的使用为：在要添加文档注释的代码块的上一行敲下/**接着按回车，这样就能生成对应代码块的文档注释
+- 生成Java API文档
+  - 通过Eclipse生成文档：
+    - 
 
 ### 面向对象概述
 
@@ -314,5 +325,60 @@ class Outer {
     ...
     ```
 
-### df
+### API概述
 
+- API(Application Programming Interface)
+  - 应用程序编程接口
+- Java API
+  - Java提供给我们使用的类，这些类将底层的实现封装了起来，我们不需要关心如何实现这些类，只需学习如何使用
+
+### Object类的概述
+
+- Object类概念
+  - 类层次结构的根类
+  - 所有类方法都直接或间接继承自该类
+- 构造方法
+  - public Object()
+- 成员方法
+  - hashCode()方法，返回对象的哈希码值
+  - getClass()方法，返回此对象的运行时类(取得字节码文件)
+
+### String类的概述
+
+- String类的获取功能
+
+  ```java
+  int length() //获取字符串长度
+  char charAt(int index) //获取对应位置的字符
+  int length() //获取字符串的长度
+  char charAt(int index) //获取索引对应位置的字符
+  int indexOf(int ch) /*返回指定字符在字符串中第一次出现处的索引，                       若字符不存在，返回 -1。*/
+  int indexOf(String str) /*获取指定字符串中第一个字符在该字符串中                       第一次出现处的索引，若不存在，返回 -1。*/
+  int indexOf(String str,int fromIndex) /*获取指定字符串在对应                                         索引之后第一次出现的                                         位置的索引*/
+  int indexOf(char ch，int fromIndex) /*获取指定字符在指定索引后                                      第一次出现处的索引*/
+  int lastIndexOf(char ch) /*从字符串最后向前查找指定字符第一次出                            现的位置*/
+  String substring(int start)  /*从指定位置开始截取字符串，默认到                                行尾*/
+  String substring(int start，int end)  /*从指定位置开始到指定                     位置前结束截取字符串 （包含头，不包含尾）*/
+  ```
+
+- String类的转换功能
+
+  ```java
+byte[] getBytes() //把字符串转换成字节数组
+char[] toCharArray() //把字符串转换为字符数组
+static String valueOf(Object) //把任意类型数据转换为字符串
+String toLowerCase() //把字符串转换成小写
+String toUpperCase() //把字符串转换成大写
+String concat(String str) //拼接字符串
+  ```
+
+### StringBuffer类和数组排序
+
+- StringBuffer类的定义
+
+  一个线程安全的可变序列，类似于String的字符串缓冲区，不可更改（指不可像String那样随意连接），但可调用方法改变其长度和内容(append()等方法)
+
+- String和StringBuffer的区别
+
+  - String是一个不可变的字符序列
+  - StringBuffer是一个可变的字符序列 

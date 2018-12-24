@@ -372,7 +372,7 @@ String toUpperCase() //把字符串转换成大写
 String concat(String str) //拼接字符串
   ```
 
-### StringBuffer类和数组排序
+### StringBuffer类
 
 - StringBuffer类的定义
 
@@ -382,3 +382,35 @@ String concat(String str) //拼接字符串
 
   - String是一个不可变的字符序列
   - StringBuffer是一个可变的字符序列 
+
+- StringBuffer的构造函数
+
+  ```java
+  public StringBuffer()  //无参构造，默认创建16字符容量
+  public StringBuffer(int capacity)  //指定容量的StringBuffer对象
+  public StringBuffer(String str)  //指定字符串的StringBuffer对象
+  ```
+
+- StringBuffer的方法
+
+  ```java
+  public int capacity() //返回缓冲区的容量
+  public int length() //返回长度(字符数)
+  public StringBuffer append(String str) //将任意字符串添加进缓冲区并返回StringBuffer本身
+  public StringBuffer insert(int offset, String str) //在指定位置将任意类型的数据插入缓冲区并返回其本身
+  public StringBuffer deleteCharAt(int index) //删除索引指向的字符
+  public StringBuffer delete(int start,int end) //删除两个索引之间的内容,包含头不包含尾
+  public StringBuffer replace(int start,int end,String str) //将索引区间的内容用str替换,包含头不包含尾
+  public StringBuffer reverse() //字符串反转
+  public String substring(int index) //从索引位置截取字符串至末尾
+  public String substring(int start,int end) //从索引开始截取到索引结束，包括头不包括尾
+  ```
+
+### StringBuilder类
+
+- 成员方法：与StringBuffer一致
+
+- 与StringBuffer的区别：StringBuffer是jdk1.0版本的，线程安全，效率低
+
+  ​					 StringBuilder是jdk1.5版本的，线程不安全，效率高
+

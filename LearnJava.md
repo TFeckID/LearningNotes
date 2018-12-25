@@ -414,3 +414,49 @@ String concat(String str) //拼接字符串
 
   ​					 StringBuilder是jdk1.5版本的，线程不安全，效率高
 
+### Arrays类的概述和方法
+
+- 概述：针对数组进行操作的工具类，提供排序，查找等方法
+
+- 成员方法：
+
+  ```java
+  public static String toString(int[] arr) //数组转字符串
+  public static void sort(int[] arr) //数组排序
+  public static int binarySearch(int[] arr, int key) //查找元素
+  ```
+
+### 基本数据类型包装类
+
+- 概述：将基本数据类型包装成对象以便于在其中定义更多的功能方法以更好地使用该数据
+
+- 基本数据类型有八种，其中七种有parse方法可以将其字符串表现形式解析为基本数据类型，Character没有该方法，原因是char无法存储多个字符
+
+- 基本数据类型与包装类对应关系
+
+  | 基本数据类型 |  包装类   |
+  | :----------: | :-------: |
+  |     byte     |   Byte    |
+  |    short     |   Short   |
+  |     int      |  Integer  |
+  |     long     |   Long    |
+  |    float     |   Float   |
+  |    double    |  Double   |
+  |     char     | Character |
+  |   boolean    |  Boolean  |
+
+- Integer常用方法
+
+  ```java
+  public int intValue() //以int形式返回该Integer对象的值
+  public static int parseInt(String s) //将字符串解析成有符号十进制整数
+  ```
+
+- JDK1.5新特性
+
+  - 自动装箱与拆箱：将基本数据类型自动包装成包装类，或将包装类自动拆箱成基本数据类型
+  - 如果数据的范围在byte的取值范围(-128,127之间)，自动装箱不会新创建对象，而是从常量池中获取，超过byte取值范围则会在堆中新创建对象
+
+### 正则表达式
+
+- 

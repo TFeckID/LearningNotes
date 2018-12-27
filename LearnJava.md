@@ -491,3 +491,89 @@ String concat(String str) //拼接字符串
   - （）可以将某一个或几个元素合成为一个组，在匹配时当成一个整体看待，\\ \\ n表示第n组又出现一次，比如 (.)\\\\ 1匹配 “哈哈” 这样的词，(.)\\\\1(.)\\\\2 匹配 ”高高兴兴“这样的词，(..)\\\\1 匹配 “高兴高兴”。
   - \$符号可以取得前面组的内容，通常用于replaceAll 方法中，\$n 代表取得第n组的内容，例 replaceAll("(.)\\\\1+","$1") 
 
+- Pattern和Matcher的概述
+
+  - 典型调用顺序：
+
+    ```java
+    Pattern p = Pattern.compile("a*b");  //获取正则表达式
+    Matcher m = p.matcher("abbbbb");  //获取匹配器
+    boolean b = m.matches();  //看是否匹配
+    ```
+
+  - 获取功能：
+
+    ```java
+    /*获取电话号码实例*/
+    Pattern p = Pattern.compile(regex);  //获取电话号码正则表达式
+    Matcher m = p.matcher(s);     //匹配源字符串
+    while(m.find())
+      System.out.print(m.group());
+    /*
+    find()   匹配源字符串，若找到匹配的子串，返回true
+    group()  返回上一次匹配成功的子串，用于获取
+    
+    find和group必须搭配使用并且find要先于group执行
+    */
+    ```
+
+### 常用工具类
+
+- Math类的概述和方法使用
+
+  - 概述：用于基本数学运算的工具类
+
+  - 成员方法
+
+    ```java
+    public static int abs(int a) //返回绝对值
+    public static double ceil(double a) //对小数向上取整
+    public static double floor(double a) //对小数向下取整
+    public static int max(int a,int b)  //返回两数中的最大值
+    public static double pow(double a,double b) //返回a的b次方
+    public static double random() //生成一个随机数
+    public static int round(float a) //四舍五入
+    public static double sqrt(double a) //返回a的开平方
+    ```
+
+- System类的概述
+
+  - 成员：
+
+    ```java
+    System.in //标准键盘输入流
+    System.out //标准输出流
+    
+    public static void gc() //运行垃圾回收器
+    public static void arraycopy(Object src,int srcPos,Object dest,int destPos,int length)
+    /*数组拷贝*/
+    ```
+
+### Collection集合
+
+- 集合的概述：
+
+  集合是接口;数组的长度是固定的，因此java提供了集合可以存储任意对象，并且长度可变，随着对象数量增减
+
+- 数组与集合的区别：
+
+  - 数组可以存储基本数据和引用数据，基本数据存储值，引用数据存储指针
+  - 集合只能存储引用数据(对象)，当存储基本数据时，会自动装箱
+  - 数组长度固定，不能自动增长；集合长度可变，能自动增减
+
+- 集合的方法
+
+  ```java
+  boolean add(E e) //将任意对象存进collection
+  boolean remove(Object o) //删除指定元素
+  void clear() //清空整个集合
+  boolean contains(Object o) 
+  boolean isEmpty()  //判断是否为空
+  int size()  //
+  Object[] toArray(T []) //返回包含集合所有元素的数组
+    
+  boolean addAll(Collection c) //将集合c中的所有元素添加进当前集合
+  boolean removeAll(Collection c) //
+  boolean containsAll(Collection c) //
+  boolean retainsAll(Collection c) //
+  ```

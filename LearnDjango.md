@@ -15,10 +15,6 @@
 
 - 项目结构及文件：
 
-  .
-
-  |---manage.py
-
   |---project_name
 
   ​        |——\__init__.py 

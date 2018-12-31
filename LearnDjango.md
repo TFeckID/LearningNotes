@@ -108,6 +108,91 @@
 
 - Django中的模型包含存储数据的字段和约束，对应数据库中唯一的表
 
+- Django与MySQL数据库连接
+
+  - 主机上安装MySQL数据库与mysql的python包
+
+    ```python
+    pip install mysql-python #python2安装此包
+    pip install MySQLClient  #python3安装此包
+    ```
+
+  - 在settings.py文件中修改如下代码
+
+    ```python
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',  #使用mysql的引擎
+            'NAME': 'test2',    #连接的数据库名
+            'USER': 'root',		#数据库用户
+            'PASSWORD': 'mysql',  #数据库密码
+            'HOST': 'localhost',  #数据库所在主机地址
+            'PORT': '3306',		  #数据库端口
+        }
+    }
+    ```
+
+- 定义模型
+
+  - 在模型中定义属性会生成表中字段
+  - Django根据属性的类型确定以下信息：
+    - 当前选择的数据库支持字段的类型
+    - 渲染管理表单时使用的默认html控件
+    - 在管理站点最低限度的验证
+  - django会为表创建自动增长的主键列，每个模型只能有一个主键列，如果使用选项设置某属性为主键列后django不会再创建自动增长的主键列
+  - 默认创建的主键列属性为id，可以使用pk代替，pk全拼为primary key
+
+- 模型实例方法
+
+  ```python
+  __str__()  #将对象转换为字符串时会调用 ##相当于java的toString()
+  sava()	   #将模型对象保存在数据表中
+  delete()   #将模型对象从数据表中删除
+  ```
+
+- 模型类的属性
+
+  - 属性objects：管理器，是Manage类型的对象，用于与数据库进行交互
+
+  - 当没有为模型类定义管理器时，Django会自动生成一个名为objects的管理器，若有自定义管理器，则Django不再自动生成
+
+  - 为模型类BookInfo定义管理器books的语法如下
+
+    ```python
+    class BookInfo(models.Model):
+        ...
+        books = models.Manager()
+    ```
+
+- 管理器Manager
+
+  - 管理器时Django的模型进行数据库操作的接口，Django应用的每个模型都至少拥有一个管理器
+
+  - Django支持自定义管理器类，继承自models.Manager
+
+  - 自定义管理器主要用于两种情况：
+
+    - 修改原始查询集，重写get_queryset()方法
+
+      ```python
+      #在model.py中编写如下代码
+      class BookInfoManager(models.Manager):
+          def get_queryset(self):
+              #默认查询未删除的图书信息
+              #调用父类的成员语法为：super(子类型, self).成员
+              return super(BookInfoManager, self).get_queryset().filter(isDelete=False)
+      ```
+
+      * 在模型类中BookInfo中定义控制器
+
+        ```python
+        class BookInfo(models.Model):
+            ...
+            books = BookInfoManager()
+        ```
+
+    - 想管理器类中添加额外的方法，比如创建对象
+
 - 模型使用步骤
 
   - 定义模型类
@@ -174,7 +259,7 @@
 - 要在管理页面显示详细信息，需在admin.py中添加自定义显示方式的类
 
   ```python
-  class model_nameAdmin(admin,ModelAdmin):
+  class model_nameAdmin(admin.ModelAdmin):
     list_display = ['<字段名>']
   '''
   列表页属性

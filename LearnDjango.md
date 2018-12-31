@@ -63,9 +63,50 @@
     python manage.py startapp <app_name>  //使用该命令创建一个应用
     ```
 
-  - 
+- Django常用命令
+
+  ```django
+  #创建数据库
+  #Django 1.7.1以上版本
+  # 1. 创建转移文件
+  python manage.py makemigrations
+  # 2. 将生成的py文件应用到数据库
+  python manage.py migrate
+  
+  #Django 1.6及以下
+  python manage.py syncdb
+  
+  #清空数据库
+  python manage.py flush   
+  
+  #创建超级管理员
+  python manage.py createsuperuser   # 按照提示输入用户名和对应的密码就好了邮箱可以留空，用户名和密码必填
+   
+  # 修改 用户密码可以用：
+  python manage.py changepassword username
+  
+  #导入导出数据
+  python manage.py dumpdata appname > appname.json
+  python manage.py loaddata appname.json
+  
+  #数据库命令行
+  python manage.py dbshell 
+  #Django 会自动进入在settings.py中设置的数据库，
+  #如果是 MySQL 或 postgreSQL,会要求输入数据库用户密码。
+  #在这个终端可以执行数据库的SQL语句。
+  ```
 
 ### 模型的使用
+
+- 定义及作用：模型是数据表结构的抽象，用于与数据库交互
+
+- ORM简介：ORM是“对象-关系-映射”的简介，主要任务是：
+
+  - 根据对象的类型生成表结构
+  - 将对象，列表的操作转换为SQL语句
+  - 将SQL查询到的结果转换为对象，列表
+
+- Django中的模型包含存储数据的字段和约束，对应数据库中唯一的表
 
 - 模型使用步骤
 
@@ -126,11 +167,52 @@
 
   ```python
   #在admin.py中编写如下代码以注册要管理的模型
-  from model import *   #在Django 2.*版本以上需用 from .model import *
+  from model import *   #在python3  需用 from .model import *
   admin.site.register(model_name)
   ```
 
+- 要在管理页面显示详细信息，需在admin.py中添加自定义显示方式的类
+
+  ```python
+  class model_nameAdmin(admin,ModelAdmin):
+    list_display = ['<字段名>']
+  '''
+  列表页属性
+  list_display  显示字段，点击列头进行排列
+  list_filter   过滤字段，过滤框会出现在右侧 list_filter = ['<字段名>'] 
+  search_fields 搜索字段，搜索框会出现在上侧 search_fields = ['<字段名>']
+  list_per_page 分页，分页框会出现在下侧 list_per_page=10
+  '''
+  admin.site.register(model_name,model_nameAdmin)
+  ```
+
+- 布尔值的显示
+
+  发布时性别的布尔值并不直观，可以使用方法进行封装
+
+  ```python
+  #在相应的模型类中定义如下方法
+  def gender(self):
+    if self.hgender:
+      return '男'
+    else:
+      return '女'
+  gender.short_description = '性别'
+  # 在admin中注册时用gender代替hgender
+  class model_nameAdmin(admin,ModelAdmin):
+    list_display = ['<字段名>','gender']
+  ```
+
+
 ### 视图与url
 
+### 模版
+
+- 模版中的标签
+
+  ```html
+  {{<变量名>}}    <!--输出大括号中的变量名-->
+  {%  %}    <!--在大括号中写代码段-->
+  ```
 
 

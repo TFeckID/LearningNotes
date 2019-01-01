@@ -141,6 +141,7 @@
     - 在管理站点最低限度的验证
   - django会为表创建自动增长的主键列，每个模型只能有一个主键列，如果使用选项设置某属性为主键列后django不会再创建自动增长的主键列
   - 默认创建的主键列属性为id，可以使用pk代替，pk全拼为primary key
+  - 字段中不能有 \__（双下划线，因为在Django QuerySet API中有特殊含义（用于关系，包含，不区分大小写，以什么开头或结尾，日期的大于小于，正则等）,也不能有Python中的关键字，name 是合法的，student_name 也合法，但是student__name不合法，try, class, continue 也不合法，因为它是Python的关键字( import keyword; print(keyword.kwlist) 可以打出所有的关键字)
 
 - 模型实例方法
 
@@ -295,9 +296,91 @@
 
 - 模版中的标签
 
-  ```html
-  {{<变量名>}}    <!--输出大括号中的变量名-->
-  {%  %}    <!--在大括号中写代码段-->
+  ```python
+  {{<变量名>}}    #输出大括号中的变量名
+  {%  %}         #在大括号中写代码段
+  {{<字典名>.<字段名>}}   #在模版中显示字典内容
+  {% for key, value in <字典名>.items %}   #遍历字典
+      {{ key }}: {{ value }}
+  {% endfor %}
   ```
 
+- 在for循环中判断是否为最后一项
 
+  ```python
+  {% for item in List %}
+      {{ item }}
+    	{% if not forloop.last %},{% endif %} 
+  {% endfor %}
+  ```
+
+  forloop.last为应用在for循环中的一个变量，作用是判断当前是否为最后一项，当为最后一项是该值为true
+
+  - 循环中的一些变量
+
+    ```python
+    forloop.counter	         #索引从 1 开始算
+    forloop.counter0	       #索引从 0 开始算
+    forloop.revcounter	     #索引从最大长度到 1
+    forloop.revcounter0	     #索引从最大长度到 0
+    forloop.first	           #当遍历的元素为第一项时为真
+    forloop.last	           #当遍历的元素为最后一项时为真
+    forloop.parentloop	     #用在嵌套的 for 循环中，获取上一层 for 循环的 forloop
+    ```
+
+  - 当列表中可能为空值时用for empty
+
+    ```python
+    <ul>
+    {% for athlete in athlete_list %}
+        <li>{{ athlete.name }}</li>
+    {% empty %}
+        <li>抱歉，列表为空</li>
+    {% endfor %}
+    </ul>
+    ```
+
+- 在模版中获得视图对应的变量
+
+  ```python
+  # views.py
+  def add(request, a, b):
+      c = int(a) + int(b)
+      return HttpResponse(str(c))
+  
+  # urls.py
+  urlpatterns = patterns('',
+      url(r'^add/(\d+)/(\d+)/$', 'app.views.add', name='add'),
+  )
+   
+  # template.html
+  {% url 'add' 4 5 %}
+  ```
+
+- 在模版中获取当前用户
+
+  ```python
+  {{ request.user }}
+  ```
+
+  如果登陆就显示内容，不登陆就不显示内容
+
+  ```python
+  {% if request.user.is_authenticated %}
+      {{ request.user.username }}，您好！
+  {% else %}
+      请登陆，这里放登陆链接
+  {% endif %}
+  ```
+
+- 获取当前网址
+
+  ```python
+  {{ request.path }}
+  ```
+
+- 获取当前GET参数
+
+  ```python
+  {{ request.GET.urlencode }}
+  ```

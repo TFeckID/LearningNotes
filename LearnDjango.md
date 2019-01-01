@@ -143,7 +143,7 @@
   - 默认创建的主键列属性为id，可以使用pk代替，pk全拼为primary key
   - 字段中不能有 \__（双下划线，因为在Django QuerySet API中有特殊含义（用于关系，包含，不区分大小写，以什么开头或结尾，日期的大于小于，正则等）,也不能有Python中的关键字，name 是合法的，student_name 也合法，但是student__name不合法，try, class, continue 也不合法，因为它是Python的关键字( import keyword; print(keyword.kwlist) 可以打出所有的关键字)
 
-- 模型实例方法
+- 模型类实例方法
 
   ```python
   __str__()  #将对象转换为字符串时会调用 ##相当于java的toString()
@@ -151,29 +151,15 @@
   delete()   #将模型对象从数据表中删除
   ```
 
-- 模型类的属性
-
-  - 属性objects：管理器，是Manage类型的对象，用于与数据库进行交互
-
-  - 当没有为模型类定义管理器时，Django会自动生成一个名为objects的管理器，若有自定义管理器，则Django不再自动生成
-
-  - 为模型类BookInfo定义管理器books的语法如下
-
-    ```python
-    class BookInfo(models.Model):
-        ...
-        books = models.Manager()
-    ```
-
 - 管理器Manager
 
-  - 管理器时Django的模型进行数据库操作的接口，Django应用的每个模型都至少拥有一个管理器
+  - 管理器是模型类的一个属性，用于将对象与数据表进行映射，是Django的模型类进行数据库操作的接口，Django应用的每个模型类都至少拥有一个管理器
 
-  - Django支持自定义管理器类，继承自models.Manager
+  - Django支持自定义管理器类，继承自models.Manager；若未自定义管理器，Django将自动生成一个管理器object
 
   - 自定义管理器主要用于两种情况：
 
-    - 修改原始查询集，重写get_queryset()方法
+    - 修改默认查询集，重写get_queryset()方法
 
       ```python
       #在model.py中编写如下代码
@@ -189,10 +175,37 @@
         ```python
         class BookInfo(models.Model):
             ...
-            books = BookInfoManager()
+            booksManager = BookInfoManager()
         ```
 
-    - 想管理器类中添加额外的方法，比如创建对象
+    - 向管理器类中添加额外的方法，比如创建对象
+
+      ```python
+      class BookInfoManager(models.Model):
+          def create(self,btitle,bpub_date):
+              b=BookInfo()
+              b.btitle=btitle
+              ...
+              return b
+      '''
+      	定义该方法后，以后新建bookInfo对象时可以使用以下语法：
+      	b=BookInfo.booksManager.create(<属性值>)
+      '''
+      ```
+
+- 查询
+
+  - 查询集
+    - 查询集表示从数据库中获取的对象的集合
+    - 查询集可以包含任意个过滤器
+    - 查询集为惰性执行，创建查询集不会访问数据库，调用数据时才会访问数据库
+    - 何时对查询集求值：迭代，序列化，与if合用
+    - 返回查询集的方法，即如何获取查询集：
+      - all()             返回所有对象
+      - filter()         过滤器，按一定的规则过滤并返回查询集
+      - exclude()
+      - order_by()
+      - values()
 
 - 模型使用步骤
 
@@ -240,6 +253,20 @@
       BookInfo.objects.all()   #查询所有
       BookInfo.objects.get(id=*)   #查询某一个
       ```
+
+- 元选项
+
+  - 在模型类中定义类Meta，设置元信息
+
+    ```python
+    class BookInfo(models.Model):
+        ...
+        class Meta():
+            db_table = ''   #定义数据表名称
+            ordering = ['id']  #对象的默认排序字段，获取对象的列表时使用，接受属性构成的列表
+            				   #字符串前加-，即'-id'表示倒序，不加表示正序
+    ```
+
 
 ### 后台管理站点
 

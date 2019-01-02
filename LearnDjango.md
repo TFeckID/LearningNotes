@@ -223,6 +223,45 @@
       exists()    #判断查询集中是否返回有数据，如果有则返回True
       ```
 
+  - 字段查询
+
+    - 用字段与一个常量值比较，相当于SQL里的where语句，作为方法filter(),exclude(),get()的参数
+
+    - 语法：属性名称__比较运算符=常量值
+
+    - 对于外键，使用“属性名_id”表示外键的原始值
+
+    - 转义：like语句中使用了%与，匹配数据中的%与，在过滤器中直接写，例如：filter(title__contains="%")，表示 where title like '%\%%'
+
+      表示查找标题中含有%的
+
+    - 比较运算符
+
+      - exact：表示判等，大小写敏感；如果没有写比较运算符，默认为判等
+
+        ```python
+        filter(isDelete = False)
+        filter(isDelete__exact = False)
+        ```
+
+      - contains：是否包含，大小写敏感
+
+        ```python
+        exclude(btitle__contains = '传')
+        ```
+
+      - startswith,endswith：以value开头或结尾，大小写敏感
+
+        ```python
+        exclude(btitle__endswith = '传')
+        ```
+
+      - isnull，isnotnull：是否为null
+
+        ```python
+        
+        ```
+
 - 聚合
 
   - 使用aggregate()函数返回聚合函数的值
@@ -230,8 +269,8 @@
   - 聚合函数有：Avg，Count，Max，Min，Sum
 
      ```python
-    from django.db.models import Max
-    maxDate = list.aggregate(Max('bpub_date')) #查询最大的日期
+      from django.db.models import Max
+      maxDate = list.aggregate(Max('bpub_date')) #查询最大的日期
      ```
 
   - Count的一半用法

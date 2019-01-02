@@ -197,15 +197,56 @@
 
   - 查询集
     - 查询集表示从数据库中获取的对象的集合
+
     - 查询集可以包含任意个过滤器
+
     - 查询集为惰性执行，创建查询集不会访问数据库，调用数据时才会访问数据库
+
     - 何时对查询集求值：迭代，序列化，与if合用
+
     - 返回查询集的方法，即如何获取查询集：
       - all()             返回所有对象
-      - filter()         过滤器，按一定的规则过滤并返回查询集
-      - exclude()
-      - order_by()
-      - values()
+      - filter()         过滤器，按一定的规则过滤满足条件的数据并返回查询集
+      - exclude()    过滤器，按一定规则过滤不满足条件的数据
+      - order_by()  排序
+      - values()      将查询结构一个对象构成一个字典并排成列表，类似于json
+
+    - 返回单个结果的方法
+
+      ```python
+      get()       #返回单个结果
+      						#如果未找到会引发"模型类.DoesNotExist异常"
+        					#如果返回多条结果会引发"模型类.MultipleObjectsRetrned"异常
+      count()     #返回当前查询结果的总条数
+      first()     #返回第一个结果
+      last()      #返回最后一个结果
+      exists()    #判断查询集中是否返回有数据，如果有则返回True
+      ```
+
+- 聚合
+
+  - 使用aggregate()函数返回聚合函数的值
+
+  - 聚合函数有：Avg，Count，Max，Min，Sum
+
+     ```python
+    from django.db.models import Max
+    maxDate = list.aggregate(Max('bpub_date')) #查询最大的日期
+     ```
+
+  - Count的一半用法
+
+    ```python
+    count = list.Count()
+    ```
+
+- F对象
+
+  - 可以使用模型的字段A与字段B进行比较，如果字段A出现在等号的左边，则字段B出现在等号右边，需要F对象构造
+
+    ```python
+    list.filter(<字段名A>__gte=F('<字段名B>'))
+    ```
 
 - 模型使用步骤
 

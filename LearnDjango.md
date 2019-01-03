@@ -259,8 +259,47 @@
       - isnull，isnotnull：是否为null
 
         ```python
-        
+        filter(btitle__isnull = False)
         ```
+
+      - 在比较运算符的前面加个i表示不区分大小写，如istartwith
+
+      - in：是否包含在范围内
+
+        ```python
+        filter(id__in = [1,2,3,4,5])
+        ```
+
+      - gt，gte，lt，lte：大于，大于等于，小于，小于等于
+
+        ```python
+        filter(id__gt = 3)
+        ```
+
+      - year，month，day，week_day，hour，minute，second：对时间日期间的类型进行运算
+
+        ```python
+        filter(bpub_date__year = 1990)
+        filter(bpub_date__gt = date(1990,12,31))
+        ```
+
+      - 跨关联关系的查询，处理join查询
+
+        - 语法：模型类名<属性名><比较>，可以没有__<比较>的部分，表示等于，结果等同
+
+          inner join
+
+        - 可反向使用，即在关联的两个模型中都可使用
+
+          ```python
+          filter(hero_info__hcontent__contains = "八") #查询书中英雄的描述包含"八"的书名
+          ```
+
+        - 查询的快捷方式：pk，pk表示primary key，默认主键是id
+
+          ```python
+          filter(pk__lt = 6)
+          ```
 
 - 聚合
 
@@ -286,6 +325,36 @@
     ```python
     list.filter(<字段名A>__gte=F('<字段名B>'))
     ```
+
+- Q对象
+
+  - 过滤器的方法中的关键字查询会合并为And进行
+
+  - 要进行or查询时，需要使用Q()对象
+
+  - Q对象用于封装一组关键字参数，这些参数与“比较运算符中的相同”
+
+    ```python
+    from django.db.models import Q
+    list.filter(Q(pk__lt = 6))
+    ```
+
+  - Q对象可以使用&，|操作符组合使用
+
+  - 当操作符用于两个Q对象时，会产生一个新的Q对象
+
+    ```python
+    list.filter(pk__lt = 6).filter(bcomment__gt = 10)
+    list.filter(Q(pk__lt = 6)|Q(bcomment__gt = 10))
+    ```
+
+  - 使用～在Q对象前面表示取反
+
+    ```python
+    list.filter(~Q(pk__lt = 4))
+    ```
+
+  - 过滤器函数可以使用多个Q对象与关键字参数，所有参数将and在一起，Q对象必须在关键字参数前面
 
 - 模型使用步骤
 
@@ -396,8 +465,13 @@
     list_display = ['<字段名>','gender']
   ```
 
-
 ### 视图与url
+
+#### 视图
+
+- 视图接受web请求并返回web响应
+- 视图就是一个python函数，被定义在view.py内
+- 响应可以是一张网页的HTML内容，一个重定向或404错误
 
 ### 模版
 

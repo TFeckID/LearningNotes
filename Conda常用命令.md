@@ -63,5 +63,16 @@ conda list //列举当前活跃环境下的所有包
 conda list -n <env_name> //列举一个非当前活跃环境下的所有包
 conda install -n <env_name> <package_name> /*为指定环境安装
                                              某个包*/
+conda remove -n <env_name> <package> //从某个环境卸载包
+conda install <package>=<package_version> //安装特定版本的包
+```
+
+#### Conda配置
+
+```c
+conda config --add channels <URL> //添加源
+conda config --set show_channel_urls yes //设置搜索时显示通道地址
+conda config --show-sources  //查看当前使用源
+conda config --remove channels <URL> //删除指定源
 ```
 

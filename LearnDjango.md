@@ -561,6 +561,39 @@
       dict.get('key',default)
       ```
 
+- Response对象
+
+  - 在django.http中定义了HttpResponse对象的API
+
+  - HttpRequest对象由django自动创建，HttpResponse对象由开发者创建
+
+  - 可以不用调用模板，直接返回数据
+
+    ```python
+    from Django.Http import HttpResponse
+    def index(request):
+      return HttpResponse("Hello World")
+    ```
+
+  - 所包含的属性
+
+    - content：表示返回的内容，字符串类型
+    - charset：表示编码的字符集，字符串类型
+    - status_code：响应的HTTP状态码
+    - content-type：指定输出的MIME类型
+
+  - 所包含的方法
+
+    - init：使用页内容实例化Response对象
+    - write(content）：以文件的方式写
+    - flush()：以文件的方式输出缓冲区
+    - set_cookie(key,value,max_age=None,expires=None)：设置cookie
+      - key，value都是字符串类型
+      - max_age：是一个int数，表示指定秒数后过期
+      - expires：一个datetime或timedelta对象，表示会话会在指定的日期/时间过期，
+      - expires和max_age二选一
+      - 如果不指定以上两者，则会话在两个星期后过期
+
 
 ### 模版
 

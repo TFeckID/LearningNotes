@@ -470,8 +470,130 @@
 #### 视图
 
 - 视图接受web请求并返回web响应
+
 - 视图就是一个python函数，被定义在view.py内
+
+  - 视图的参数：一个HttpResponse实例，通过正则获取的位置参数和关键字参数
+
 - 响应可以是一张网页的HTML内容，一个重定向或404错误
+
+- Django自带视图
+
+  - 404错误视图:defaults.page_not_found(request, templates_name="404.html")
+    - 默认的404视图将传递一个变量：request_path给模版，他是引起错误的URL
+    - 如果django没有在urls.py中找到匹配的正则，也会调用该视图
+    - 如果为debug模式，将永远不调用该视图
+  - 500错误视图：defaults.server_error(request, template_name="500.html")
+    - 在视图代码中出现运行时错误
+    - 默认的500视图不会传递变量给模版
+    - 在debug模式下不会调用该视图
+  - 400错误视图：defaults.bad_request(reuqest,template_name="400.html")
+    - 错误来自客户端的操作
+    - 当用户进行可以操作时，如篡改会话cookie
+
+- HttpRequest对象
+
+  - 服务器收到http请求后，会根据报文构建httpRequest对象
+
+  - 视图函数的第一个参数是httpRequest对象
+
+  - 在django.http模块中定义了httpRequest对象的API
+
+  - 对象包含的属性：
+
+    - 以下属性除非特别说明，皆为只读
+
+    - path：一个字符串，表示请求页面的完整路径，不包含域名
+
+    - method：一个字符串，表示请求的方法，常用的有“GET”,"POST"
+
+    - encoding：一个字符串，表示提交的数据编码
+
+      - 如果为None则使用浏览器默认值，一般为utf-8
+      - 该属性可写，可通过它来修改访问表单的数据使用的编码
+
+    - GET：一个类似字典的对象，包含GET请求的所有参数
+
+      - 类型为QueryDict；
+      - 包含get请求方法的所有参数与url请求中的参数对应，位于？后面
+      - 参数的格式是键值对
+      - 多个参数之间用&连接，如key1=value1&key2=value2
+      - key是开发人员定下来的，value是可变的
+
+    - POST：一个类似字典的对象，包含POST请求的所有参数
+
+      - QueryDict类型对象，包含post请求方法的所有参数，与form表单中的控件相对应
+
+      - 表单中的name属性的值为健，value属性的值为键，构成键值对提交
+
+        对于checkbox控件，name属性一样为一组，当控件选中提交后，存在一键多值的情况
+
+    - FILES：类似字典的对象，包含所有的上传文件
+
+    - COOKIES：一个标准的python字典，包含所有的cookie，键值都为字符串
+
+    - session：一个可读可写的类似字典的对象，表示当前会话，只有当django启用会话支持时才可用
+
+  - 对象包含的方法：
+
+    - is_ajax():如果请求是通过XMLHttpRequest发起的，返回True
+
+- QueryDict对象
+
+  - 定义在Django.http.QueryDict
+
+  - request的GET，POST属性都是该对象
+
+  - 通常用来处理同一个key带多个value的情况
+
+  - 方法：
+
+    - get()：通过key获取value，只能获取一个value，若存在多个value，则获取最后一个
+
+    ```python 
+    dict.get('key',default)
+    dict['key']   #简写形式
+    ```
+
+    - getlist()：将value以list形式返回，获取多个value
+
+      ```python
+      dict.get('key',default)
+      ```
+
+- Response对象
+
+  - 在django.http中定义了HttpResponse对象的API
+
+  - HttpRequest对象由django自动创建，HttpResponse对象由开发者创建
+
+  - 可以不用调用模板，直接返回数据
+
+    ```python
+    from Django.Http import HttpResponse
+    def index(request):
+      return HttpResponse("Hello World")
+    ```
+
+  - 所包含的属性
+
+    - content：表示返回的内容，字符串类型
+    - charset：表示编码的字符集，字符串类型
+    - status_code：响应的HTTP状态码
+    - content-type：指定输出的MIME类型
+
+  - 所包含的方法
+
+    - init：使用页内容实例化Response对象
+    - write(content）：以文件的方式写
+    - flush()：以文件的方式输出缓冲区
+    - set_cookie(key,value,max_age=None,expires=None)：设置cookie
+      - key，value都是字符串类型
+      - max_age：是一个int数，表示指定秒数后过期
+      - expires：一个datetime或timedelta对象，表示会话会在指定的日期/时间过期，
+      - expires和max_age二选一
+      - 如果不指定以上两者，则会话在两个星期后过期
+
 
 ### 模版
 

@@ -215,8 +215,8 @@
 
       ```python
       get()       #返回单个结果
-      						#如果未找到会引发"模型类.DoesNotExist异常"
-        					#如果返回多条结果会引发"模型类.MultipleObjectsRetrned"异常
+      			#如果未找到会引发"模型类.DoesNotExist异常"
+        			#如果返回多条结果会引发"模型   类.MultipleObjectsRetrned"异常
       count()     #返回当前查询结果的总条数
       first()     #返回第一个结果
       last()      #返回最后一个结果

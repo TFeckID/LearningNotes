@@ -593,6 +593,43 @@
       - expires：一个datetime或timedelta对象，表示会话会在指定的日期/时间过期，
       - expires和max_age二选一
       - 如果不指定以上两者，则会话在两个星期后过期
+    - Delete_cookie(key)：删除指定key的cookie，如果key不存在则什么都不发生
+
+  - 子类HttpResponseRedirect
+
+    - 重定向，服务端跳转
+    - 构造函数的第一个参数用于指定重定向的地址
+
+  - 子类JsonResponse
+
+    - 返回json数据，一般用于异步请求
+    - 方法：\__init__(data)
+
+- 状态保持Session
+
+  - 启用session
+
+    - 使用django-admin startproject命令生成的项目默认启用
+
+    - 在setting.py文件中设置
+
+      ```python
+      #向APPS列表中添加
+      'django.contrib.sessions',
+      
+      #向MIDDLEWARE_CLASSES列表中添加
+      'django.contrib.sessions.middleware.SessionMiddleware',
+      ```
+
+    - 禁用session：删除以上两个表项
+
+  - 使用session
+
+    - 启用session后，每个HttpRequest对象将具有一个session属性，他是一个类字典对象
+    - get(key,default=None)：根据key获取会话的值
+    - clear()：清除所有会话
+    - flush()：清除当前会话所有数据并删除会话的cookie
+    - del request.session['member_id']：删除会话
 
 
 ### 模版

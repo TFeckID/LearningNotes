@@ -561,19 +561,93 @@ String concat(String str) //拼接字符串
   - 集合只能存储引用数据(对象)，当存储基本数据时，会自动装箱
   - 数组长度固定，不能自动增长；集合长度可变，能自动增减
 
+- 集合的体系
+
+  - 根接口Collection
+    - List(子接口，有序，存取顺序一致，有索引，可以存储重复数据)
+      - ArrayList
+        - 底层由数组实现
+      - LinkList
+        - 底层由链表实现
+      - Vector
+        - 同ArrayList，但时间较早
+    - Set(子接口，无序，存取顺序不一致，无索引，不可存储重复数据)
+      - HashSet
+        - 由哈希算法实现
+      - TreeSet
+        - 由二叉树实现
+
 - 集合的方法
 
   ```java
   boolean add(E e) //将任意对象存进collection
   boolean remove(Object o) //删除指定元素
   void clear() //清空整个集合
-  boolean contains(Object o) 
+  boolean contains(Object o) //如果包含指定元素，返回true
   boolean isEmpty()  //判断是否为空
-  int size()  //
+  int size()  //返回集合长度，即集合内元素个数
   Object[] toArray(T []) //返回包含集合所有元素的数组
-    
   boolean addAll(Collection c) //将集合c中的所有元素添加进当前集合
   boolean removeAll(Collection c) //
   boolean containsAll(Collection c) //
-  boolean retainsAll(Collection c) //
+  boolean retainAll(Collection c) //取集合c与当前集合的交集，若调用的集合改变，返回true，若不                                   变，返回false；即当前集合为c的同集或子集时返回false
   ```
+
+- 迭代器的使用（集合遍历）
+
+   ```java
+  Iterator iterator() //返回一个当前集合的迭代器
+  Boolean hasNext() //是否有下一个元素
+  Object next() //返回下一个元素
+  ```
+
+- List的特有方法
+
+  ```java
+  void add(int index,E element) //在指定的索引处添加一个元素，其后元素依次向后移一个单位;当使用									不存在的索引时，将出现索引越界异常;index小于等于size
+  E remove(int index) //删除索引对应处的元素,并返回被删除的元素
+  E get(int index) //返回索引对应处的元素
+  E set(int index,E element) //修改指定位置的元素 ,并返回更改前的元素
+  ListIterator listIterator() //返回一个ListIterator
+  ```
+
+  - 并发修改：使用迭代器遍历的同时集合在增减元素，称为并发修改,并发修改在普通的迭代器中是不被允许的，因为在开始生成迭代器时就已告知迭代器元素的总数，开始迭代后元素总数不可变。此时，可用ListIterator，此为List专有的迭代器，可以实现迭代的同时增加元素
+
+  - LinkList特有的方法
+
+    ```java
+    void addFirst(E e) //从开头插入元素
+    void addLast(E e) //从结尾插入元素
+    E getFirst() //取得第一个元素
+    E getLast() //取得最后一个元素
+    E removeFirst() //删除第一个元素
+    E removeLast() //删除最后一个元素
+    ```
+### 泛型的概述和使用
+
+- 集合泛型
+
+​       定义：集合泛型是指在定义集合时，在集合名前类型名后以<>标注此后集合内将存储的数据的类型，加了泛型的集合   将只能存储泛型内指定的对象。泛型内必须是引用数据类型。
+
+```java
+  Collection<String> arr = new ArrayList<>();
+```
+
+  泛型的优点：1、提高安全性，将运行期错误转到编译期
+
+​			 2、省去强转麻烦
+
+  - 泛型类的概述和定义
+
+    将泛型定义在类上：
+
+    ```java
+    public class 类名<泛型类型>
+    ```
+
+    泛型必须是引用类型 ,泛型可以替代类中定义的成员变量数据类型，使之可以在创建对象时再定义类内的成员变量数据类型
+
+- 泛型接口的概述和定义
+
+  
+

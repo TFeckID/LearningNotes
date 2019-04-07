@@ -424,6 +424,7 @@ String concat(String str) //拼接字符串
   public static String toString(int[] arr) //数组转字符串
   public static void sort(int[] arr) //数组排序
   public static int binarySearch(int[] arr, int key) //查找元素
+  public static List<T> asList(T ... a) //返回由数组元素生成的集合
   ```
 
 ### 基本数据类型包装类
@@ -573,9 +574,20 @@ String concat(String str) //拼接字符串
         - 同ArrayList，但时间较早
     - Set(子接口，无序，存取顺序不一致，无索引，不可存储重复数据)
       - HashSet
+
         - 由哈希算法实现
+
+        ```java
+        HashSet<E> hs = new HashSet();  
+        ```
+
+        - HashSet的存取顺序是不一致的，存入顺序和取出顺序不一定相同
+        - 存入时先调用对象的hashCode()方法，计算并比较Hashcode，若相同，再调用equls()方法比较对象的属性，若相同，则属于同一对象；在存储自定义对象时，应重写这两个方法
+
       - TreeSet
-        - 由二叉树实现
+
+        - 由二叉树实现，可以对元素进行排序
+        - TreeSet不能直接存储自定义对象，若要存储自定义对象，对象所属类必须实现Comparable<T>接口，并重写compareTo()方法，以确保该类可比较。当此对象小于，等于或大于指定的比较对象时，compareTo方法返回一个负整数、零、正整数。
 
 - 集合的方法
 
@@ -595,7 +607,7 @@ String concat(String str) //拼接字符串
 
 - 迭代器的使用（集合遍历）
 
-   ```java
+  ```java
   Iterator iterator() //返回一个当前集合的迭代器
   Boolean hasNext() //是否有下一个元素
   Object next() //返回下一个元素
@@ -623,6 +635,8 @@ String concat(String str) //拼接字符串
     E removeFirst() //删除第一个元素
     E removeLast() //删除最后一个元素
     ```
+
+- Set
 ### 泛型的概述和使用
 
 - 集合泛型
@@ -649,5 +663,43 @@ String concat(String str) //拼接字符串
 
 - 泛型接口的概述和定义
 
-  
+### Map的概述及用法
+
+- 一个可变长度的键值对的双列集合
+- HashMap：以哈希算法实现的Map
+- TreeMap：以二叉树实现的Map，和TreeSet一样可以自动排序
+- Map接口的方法
+
+```java
+V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并                        返回原来的值
+V get(Object key) //根据提供的键来返回值，若键不存在，则返回null
+void clear()  //移除所有的元素，清空集合
+V remove(Object key)  //根据键移除键值对元素，并返回被移除的值
+boolean containsKey(Object key)  //判断对应的键是否在集合中存在
+boolean containsValue(Object value) //判断对应的值是否在集合中存在
+boolean isEmpty()  //判断集合是否为空
+Set<K> KetSet()  //获取Map中所有键的Set集合
+Collection<V> values() //获取Map中所有值得Collection集合
+Set<Map.Entry<K,V>> entrySet() //将Map中的键值对作为一个对象，获取Map的键值对Set
+int size()  //返回Map的长度，即键值对个数
+```
+
+- HashMap和Hashtable的区别
+  - HashMap是线程不安全的，效率高，出现在JDK1.2版本；Hashtable是线程安全的，效率低，出现在JDK1.0
+  - HashMap中的键值可以为null；Hashtable不可以
+
+### Collections工具类的方法
+
+```java
+public static <T> void sort(List<T> list)  /*对传入的List进行排序，要求传入的List中所存的对象
+    										的类已实现Comparable接口，即对象具备可比较性*/
+public static <T> int binarySearch(List<T> list,T key) /*以二分查找的算法查找List中对应元素														并返回其索引，若不存在该元素，则返回														其可以插入的点的负索引-1(-插入点-1)*/
+public static <T> T max(collection<?> coll) //获取集合元素的最大值
+public static void reverse(List<?> list)  //反转集合顺序
+public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
+```
+
+
+
+
 

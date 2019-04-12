@@ -671,7 +671,7 @@ String concat(String str) //拼接字符串
 - Map接口的方法
 
 ```java
-V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并                        返回原来的值
+V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原                        值，并返回原来的值
 V get(Object key) //根据提供的键来返回值，若键不存在，则返回null
 void clear()  //移除所有的元素，清空集合
 V remove(Object key)  //根据键移除键值对元素，并返回被移除的值
@@ -699,7 +699,133 @@ public static void reverse(List<?> list)  //反转集合顺序
 public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
 ```
 
+### JDBC的使用
+
+- 代码示例
+
+  ```java
+  try {
+       //注册JDBC驱动
+  	 DriverManager.registerDriver(new Driver()); 
+      
+       //建立连接
+       //url = "jdbc:mysql://localhost/student"  //连接用的协议，地址及数据库名
+       Connection conn = DriverManager.getConnection(url,user,password); 
+       //创建一个statement对象
+       Statement state = conn.createStatement();
+       //执行查询，得到结果集
+       String sql = "select * from user"; //查询用的sql语句
+  	 ResultSet rs = state.executeQuery(sql);	
+  	 //遍历结果集
+  	 while (rs.next()) {
+  		String id = rs.getString("id");
+  		String name = rs.getString("name");
+  		int age = rs.getInt("age");
+  		String birth = rs.getString("birth");
+  		System.out.println("ID:" + id + " NAME:" + name + " age:" + age + "       birth:" + birth);	
+  			}
+  	 //关闭各连接对象
+  		rs.close();
+  		state.close();
+  		conn.close();
+  	} catch (SQLException e) {
+  		e.printStackTrace();
+  	   }
+  ```
+
+  - Statement：Java执行数据库操作的一个接口，用于向数据库发送要执行的静态SQL语句并返回查询得到的结果集。
+
+  - JDBC工具类：在最后关闭对象释放资源时，通常将关闭代码单独建立一个工具类以提高代码复用，
+
+    ```java
+    public class JDBCutil {
+    	
+    	private JDBCutil() {
+    		
+    	}
+    	//关闭各对象，释放资源
+    	public static void release(ResultSet rs,Statement state,Connection conn) {
+    		closeRs(rs);
+    		closeStatement(state);
+    		closeConnection(conn);
+    	}
+    	
+    	private static void closeRs(ResultSet rs) {
+    		try {
+    			if (rs != null) {
+    				rs.close();
+    			}
+    			
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}finally {
+    			rs = null;
+    		}
+    		
+    	}
+    	
+    	private static void closeStatement(Statement state) {
+    		try {
+    			if (state != null) {
+    				state.close();
+    			}
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}finally {
+    			state = null;
+    		}
+    		
+    	}
+    	
+    	private static void closeConnection(Connection conn) {
+    		try {
+    			if (conn != null) {
+    				conn.close();
+    			}
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}finally {
+    			conn = null;
+    		}
+    		
+    	}
+    }
+    ```
 
 
+  - 注册驱动不是必须的，JDBC4以后的版本，驱动将自动注册。
 
+### Properties文件使用
+
+- properties文件记录了jdbc的连接数据，用于直接读取以方便连接文件格式如下
+
+  ```java
+  url = <url>
+  user = <username>
+  password = <passwd>
+  //字段名 = 数值
+  ```
+
+- 使用properties文件：在代码中新建properties对象并用文件中的key获取对应的值
+
+  ```java
+  Properties pro = new Properties(); //新建pro对象
+  InputStream is = 
+      <类名>.class.getClassLoder().getResourceAsStream("jdbc.properties"); /*
+      将properties文件读取为输入流
+      */
+  pro.load(is); //pro对象加载输入流
+  url = pro.getString("url"); //获取文件中的各值
+  
+  ```
+
+  
+
+### DAO模式
+
+> Data Access Object：数据库访问规则
+
+1. 新建一个dao接口，里面声明数据库访问规则
+
+2. 新建dao实现类,实现上面的接口
 

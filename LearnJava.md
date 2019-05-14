@@ -829,3 +829,336 @@ public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
 
 2. 新建dao实现类,实现上面的接口
 
+### PreparedStatement类使用
+
+1. 为了解决sql注入的问题引入PreparedStatement类，与之前Statement类的区别在于，前者为先拼接SQL语句再执行，后者为先预处理SQL语句再拼接执行
+
+2. 代码示例
+
+   ```java
+   String sql = "select * from <表名> where <字段名> = ？"; //在需要用变量替换的地方用？占位
+   PreparedStatement ps = connection.prepareStatement(sql);//创建ps对象并传入sql语句预处理
+   ps.setString(1,id); //传入变量名设置相应字段
+   resultSet = ps.executeQuery(); //执行查询操作获取结果集
+   num = ps.executeUpdate(); //执行更新获取影响行数
+   ```
+
+### JavaWeb介绍
+
+#### XML文件介绍
+
+1. XML文件用途
+   1. 用来保存数据
+   2. 做配置文件
+   3. 传递数据的载体
+
+2. 文件格式
+
+   ```xml
+   <? xml version = "1.0" encoding = "UTF-8" ?>
+   <一级标签>
+       <二级标签>
+           <三级标签>数据</三级标签>
+           <三级标签>数据</三级标签>
+       </二级标签>
+   </一级标签>
+   ```
+
+   XML文件第一行为文档声明，通常声明文档的版本和编码。声明下的第一个标签为根标签，所有的标签和数据必须包含在根标签内。
+
+3. 标签属性：标签中可以定义属性，属性名不限可自由指定
+
+   ```xml
+   <stu id = "10086">
+       <name>张三</name>
+       <age>23</age>
+   </stu>
+   ```
+
+4. 注释：<!--这里是一条注释 -->，注释必选在文档声明下方。
+
+5. 转义字符
+
+   |  \&lt;  |  <   |  小于  |
+   | :-----: | :--: | :----: |
+   |  \&gt;  |  >   |  大于  |
+   | \&amp;  |  &   |  和号  |
+   | \&apos; |  .   | 省略号 |
+   | \&quot; |  "   |  引号  |
+
+6. CDATA区，用于传递数据，区内的标签将被认为是普通字符串，很少用到
+
+   ```xml
+   <decs><![CDATA[
+   <a href = "www.baidu.com">lalala</a>
+       ]]></decs>
+   ```
+
+7. XML的解析方式
+
+   1. SAX：simple API for XML；基于事件驱动，读取一行解析一行。不会造成内存溢出，不能增删改，只能查询。
+
+   2. DOM：Document Object Model；将整个xml文档读到内存中，形成树状结构，整个文档称之为document对象，标签称为element对象，属性称为attribute对象，数据称为Text对象。若文件过大，可能造成内存溢出，可以进行增删改操作。
+
+   3. 解析方案：jaxp，jdom，dom4j
+#### Tomcat的安装与使用
+
+   1. Tomcat目录介绍
+
+      1. bin:Tomcat的可执行文件目录
+      2. conf：配置文件目录：server.xml  web.xml
+      3. lib：运行所需的jar文件
+      4. logs：运行日志
+      5. webapps：发布到Tomcat服务器上的项目存放目录
+      6. work：jsp翻译成class文件存放目录
+
+   2. 如何把项目发布到Tomcat
+
+      1. 将要发布的文件拷贝到webapps下，新建一个文件夹并存放要发布的web文件，浏览器访问路径为
+
+         <地址>:8080/<新建文件夹名>/<文件名>
+
+      2. 用虚拟路径发布：在conf/server.xml中找到host元素节点，并加入以下内容
+
+         ```xml
+         <Context docBase = "" path=""></Context>
+         <!-- docBase:要发布的文件实际存储路径 path:url中用于访问的虚拟路径-->
+         ```
+
+#### Http简介
+
+1. Http协议介绍
+
+   
+
+2. Http请求数据介绍
+
+   http请求数据结构分为请求行，请求头，请求体
+
+   1. 请求行格式:
+
+   ```http
+   POST /examples/servlets/servlet/RequestParamExample HTTP/1.1
+   
+   POST:请求方式  
+   /examples/servlets/servlet/RequestParamExample :请求的地址路径
+   HTTP/1.1 :HTTP协议版本
+   ```
+
+   2. 请求头内容
+
+      ```http
+      accept : 客户端向服务端表示自己能接受的数据类型
+      Referer : 请求的全路径地址
+      User-Agent : 向服务端表明当前客户端的信息（浏览器内核版本，操作系统内核版本、位数等信息）
+      content—type : 提交的数据类型
+      accept-encoding : 压缩算法
+      Host : 主机地址
+      Content-lenght : 数据长度
+      Connection : <keep-alive> 是否保持连接
+      Cache-Control : 对缓存操作
+      ```
+
+   3. 请求体内容
+
+      浏览器真正发送给服务器的内容,以 key=value 的形式,如果存在多组数据, 键值对间以 & 连接
+
+      ```http
+      请求体例:
+      firstname=sasa&lastname=sdsd 
+      ```
+
+3. Http响应数据
+
+   响应数据包括响应行,响应头,响应体
+
+   1. 响应行结构
+
+      ```http
+           HTTP/1.1  200    OK
+      结构:(协议版本) (状态码) (对应状态码)
+      ```
+
+   2. 响应头结构
+
+      ```http
+      Server : 服务器类型
+      Content-Type : 返回给客户端的数据类型及编码格式
+      Content-Length : 返回数据的长度
+      Date : 响应的日期
+      ```
+
+4. GET和POST请求的区别
+
+   1. 请求路径不同,post请求在url后面不跟任何数据,get请求,在url后面跟上请求数据
+
+   2. 带上的数据不同,post使用流的方式写数据,  get在url中拼接请求数据
+
+   3. 由于post使用流的方式写数据,所以一定要有一个content-length的头来说明数据的长度,没有长度限制,
+
+      get在url后面拼接数据,有安全隐患,一般在从服务端获取数据同时客户端不上传数据时使用,能带的数据有限,限制1kb大小
+
+5. Web资源
+
+   在http协议中规定了响应和请求双方,客户端与服务端与web相关的资源
+
+   1. 静态资源
+
+      包括 html , css , js 
+
+   2. 动态资源
+
+      包括 jsp
+
+#### Servlet介绍
+
+1. Servlet定义: Servlet是一个运行在web服务器上的 Java 程序,用于响应客户端的HTTP请求, 配合动态资源来使用, 静态资源也需要,但是静态资源通常使用Tomcat自带一个 defaultServlet. 
+
+2. Servlet是一个Java接口,需要有一个类实现,但通常不直接实现Servlet,而是继承其实现类HttpServlet
+
+3. Servlet配置
+
+   ```xml
+   1.新建一个类并继承HttpServlet抽象类,并重写doGet()和doPost()方法
+   2.在web.xml中写入以下配置
+   <!--该配置用于向web服务器注册一个Servlet-->
+   <servlet>
+     	<servlet-name>{实现Servlet接口的类名}</servlet-name>
+     	<servlet-class>{包名.类名}</servlet-class>
+     </servlet>
+   
+   <!--该配置用于创建一个指向Servlet的url映射 -->
+     <servlet-mapping>
+     	<servlet-name>{类名}</servlet-name>
+     	<url-pattern>/{自定义url名}</url-pattern>
+     </servlet-mapping>
+   ```
+
+   - 注册Servlet的简易方法，在实现类的前面加@WebServlet注解
+
+      ```java
+     @WebServlet("/aaa") //注解内为url链接后缀
+     public class Servlet2 extends HttpServlet{
+         ...
+     }
+     ```
+
+     
+
+4. Servlet生命周期
+
+   1. init() 方法: 在创建该servlet 实例时就会执行该方法, 一个servlet只会初始化一次, init()方法只会执行一次,默认情况下,初次访问该servlet时,才会创建实例，若要提前创建实例，可在web.xml中写入配置
+
+      ```xml
+      <servlet>
+          <load-on-startup>1</load-on-startup> <!--该数字越小，启动优先级越高-->
+      </servlet>
+      ```
+
+      
+
+   2. service() 方法: 只要客户端来了一个请求, 就执行该方法, 可以被执行多次,一次请求,对应一次该方法调用
+
+   3. destroy() 方法: servlet被销毁时执行该方法
+      - 该项目从服务器中移除
+      - 正常执行服务器关闭程序
+
+5. ServletContext类
+
+   1. 用于获取全局设定，一个web工程中只含有一个ServletContext对象，无论在何处声明该对象，均指向同一对象，用于获取在web.xml中设定的全局配置，任何一个servlet都可以获取该参数
+
+   2. 先在web.xml中设定以下参数
+
+      ```xml
+      <context-param>
+        	<param-name>name</param-name>
+        	<param-value>value</param-value>
+        </context-param>
+      ```
+
+      再在servlet类中获取该对象
+
+      ```java
+      ServletContext sc = getServletContext();
+      ```
+   3. sc对象的各成员方法
+      
+
+      - 使用以下方法可获取到xml文件中的param-value值
+      
+      ```java
+String getInitParameter("<param-name>") //该方法返回上面的param-value值
+      ```
+
+      - 使用以下方法可以获取指定文件的绝对路径
+      
+      ```java
+String getRealPath("<指定文件的相对路径>") //以指定文件的相对路径获取绝对路径
+      ```
+      
+      - 使用以下方法可以将指定文件转成流
+      ```java
+      InputStream getResourceAsStream("<指定文件的相对路径>")
+      ```
+      
+   
+6. HttpRequest与HttpResponnse
+
+   1. doGet和doPost参数列表中的两个形参，request和response
+
+   2. request：浏览器传给服务端的数据，里面通常包含要提交的表单信息
+
+      ```java
+      request.getParameter("<输入框name>") //使用该方法提取request中的表单信息
+      ```
+
+      
+
+   3. response：服务端返回给客户端的信息
+
+      ```java
+      PrintWriter response.getWriter(); //返回一个PrintWriter对象
+      pw.write(<要返回的字符串>)；
+      response.getWriter().write(<要返回的字符串>); //或者直接这样返回
+      response.setCharacterEncoding(); //设置返回的字符集
+      response.setHeader("Content-Encoding", "UTF-8"); //设置浏览器以什么字符集解析页面
+      ```
+
+   4. 
+
+
+#### Cookie和Session
+
+
+
+### Maven使用简介
+
+> Maven是java的项目管理软件，可以自动处理jar包的依赖，类似于python的conda
+
+1. Maven项目结构
+
+   | 目录                               | 目的                                                         |
+   | :--------------------------------- | ------------------------------------------------------------ |
+   | ${basedir}                         | 存放pom.xml和所有的子目录                                    |
+   | ${basedir}/src/main/java           | 项目的java源代码                                             |
+   | ${basedir}/src/main/resources      | 项目的资源，比如说property文件，springmvc.xml                |
+   | ${basedir}/src/test/java           | 项目的测试类，比如说Junit代码                                |
+   | ${basedir}/src/test/resources      | 测试用的资源                                                 |
+   | ${basedir}/src/main/webapp/WEB-INF | web应用文件目录，web项目的信息，比如存放web.xml、本地图片、jsp视图页面 |
+   | ${basedir}/target                  | 打包输出目录                                                 |
+   | ${basedir}/target/classes          | 编译输出目录                                                 |
+   | ${basedir}/target/test-classes     | 测试编译输出目录                                             |
+   | Test.java                          | Maven只会自动运行符合该命名规则的测试类                      |
+   | ~/.m2/repository                   | Maven默认的本地仓库目录位置                                  |
+
+2. Maven字段意义
+
+   所有 POM 文件都需要 project 元素和三个必需字段：groupId，artifactId，version。
+
+   | 节点         | 描述                                                         |
+   | ------------ | ------------------------------------------------------------ |
+   | project      | 工程的根标签。                                               |
+   | modelVersion | 模型版本需要设置为 4.0。                                     |
+   | groupId      | 这是工程组的标识。它在一个组织或者项目中通常是唯一的。例如，一个银行组织 com.companyname.project-group 拥有所有的和银行相关的项目。 |
+   | artifactId   | 这是工程的标识。它通常是工程的名称。例如，消费者银行。groupId 和 artifactId 一起定义了 artifact 在仓库中的位置。 |
+   | version      | 这是工程的版本号。在 artifact 的仓库中，它用来区分不同的版本。例如：com.company.bank:consumer-banking:1.0                                    com.company.bank:consumer-banking:1.1 |

@@ -1,4 +1,6 @@
-# Java从入门到问灵
+# Java：从入门到问灵
+
+## Java SE
 
 ### Eclipse使用
 
@@ -699,6 +701,18 @@ public static void reverse(List<?> list)  //反转集合顺序
 public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
 ```
 
+### Data 类概述与使用
+
+> Data类是Java.util提供的封装当前日期和时间的类
+
+
+
+
+
+
+
+## Java EE 
+
 ### JDBC的使用
 
 - 代码示例
@@ -706,7 +720,7 @@ public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
   ```java
   try {
        //注册JDBC驱动
-  	 DriverManager.registerDriver(new Driver()); 
+  	 DriverManager.registerDriver(new Driver()); //非必须步骤
       
        //建立连接
        //url = "jdbc:mysql://localhost/student"  //连接用的协议，地址及数据库名
@@ -1121,13 +1135,76 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
       pw.write(<要返回的字符串>)；
       response.getWriter().write(<要返回的字符串>); //或者直接这样返回
       response.setCharacterEncoding(); //设置返回的字符集
-      response.setHeader("Content-Encoding", "UTF-8"); //设置浏览器以什么字符集解析页面
+      response.setContentType("text/html;charset=UTF-8"); //设置浏览器以什么字符集解析页面
       ```
 
    4. 
 
-
 #### Cookie和Session
+
+##### 重定向和请求转发
+
+1. 重定向方法
+
+   ```java
+   response.sendRedirect("<重定向的HTML文件名>");
+   ```
+
+2. 请求转发方法
+
+   ```java
+   request.getRequestDispatcher("<重定向的HTML文件名>").forward(request, response);
+   ```
+
+##### Cookie介绍
+
+> 服务器发送给客户端并存储在客户端上的一份数据,记录了用户的登录数据，浏览记录等。
+
+1. Cookie的设置和获取
+
+   1. 向客户端添加cookie
+
+      ```java
+      Cookie c = new Cookie("key","value");
+      response.addCookie(c);
+      ```
+
+   2. 获取客户端请求中的cookie
+
+      ```java
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null) {    //当第一次请求时，cookie可能为空，要先判断 
+      			for (Cookie c : cookies) {
+      				String nameString = c.getName();
+      				String valString = c.getValue();
+      				System.out.println(nameString + "..." + valString);
+      			}
+      		}
+      ```
+
+2. Cookie的生存周期
+
+   > 默认情况下，关闭浏览器后Cookie即失效，但可以设置Cookie的有效期
+
+   通过以下方法可设置有效期
+
+   ```java
+   cookie.setMaxAge(expiry); /* expiry取值：
+                              * 正值x：cookie将在x秒后过期
+                              * 负值：保存到浏览器关闭时即删除cookie
+                              *
+                              */
+   ```
+
+3. Cookie的其他方法
+
+   ```java
+   cookie.setValue(newValue); //设置新的值
+   cookie.setDomain(pattern); //用于指定只有请求了指定的域名才能带上该cookie
+   cookie.setPath("/CookieDemo"); //只有访问该域名下的CookieDemo这个路径才会带cookie
+   ```
+
+4. 
 
 
 

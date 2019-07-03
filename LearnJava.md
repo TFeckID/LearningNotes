@@ -1204,9 +1204,168 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
    cookie.setPath("/CookieDemo"); //只有访问该域名下的CookieDemo这个路径才会带cookie
    ```
 
-4. 
+
+##### Session
+
+> Session,会话。Session是基于Cookie的一种会话机制，Cookie是存放在客户端的一小份数据，Session是存放在服务端的数据。会在cookie中添加一个sessionID，由服务器生成。
+
+1. Session的获取和常用方法
+
+   ```java
+   HttpSession s = request.getSession(); //获取一个Session
+   s.getID(); //得到会话ID
+   s.setAttribute(key,value); //设置值
+   s.getAttribute(key); //获取值
+   s.removeAttribute(key); //移除值
+   ```
+
+2. Session生存周期
+
+   - 创建：当调用了`request.getSession()`，即创建了一个Session。
+   - 销毁：Session是存放在服务器内存中的一份数据，销毁Session的途径有
+     	          1. 关闭服务器
+               2. 会话时间过期，默认为30分钟
+   - Session可以用Redis进行持久化
+
+3. Session强制终结
+
+   ```java
+   session.invalidate(); //强制总结当前会话
+   ```
 
 
+#### JSP
+
+> JSP，java server page；继承自servlet的一个java类，用于显示动态的网页信息。HTML只适合显示静态的网页。
+
+##### JSP的三大指令
+
+> 指令的写法：<%@ 指令名 指令参数=...%>
+
+1. Page指令
+   
+   该指令各参数的意义：
+   
+   - language：表明jsp文件中可以写java代码
+   
+   - contentType：向浏览器表明文件的类型以及使用的编码，告诉浏览器该如何打开该文件。
+   
+   - extends：用于指定jsp翻译成java文件后，继承的父类是谁，一般不用改。
+   
+   - import：导包用，一般不用手写。
+   
+   - session：
+   
+     - 可选的值为true或false
+     - 用于控制在这个session页面内，是否可以直接使用session对象
+   
+   - errorPage：
+   
+     用于控制当前页面出现错误时，跳转到下一个jsp页面。值是下一个页面的路径。
+   
+   - isErrorPage：
+   
+     用于声明某一个页面是不是错误跳转页面
+   
+2. Include指令
+
+   用于包含另一个jsp文件的内容进来。
+
+3. taglib指令
+
+##### JSP动作标签
+
+##### JSP内置对象
+
+>可以在jsp页面中直接使用的对象，不用创建。
+
+- PageContext【PageContext 类】
+
+  作用域仅限于当前页面
+
+- request【HttpServletRequest 类】
+
+  作用域仅限于一次请求，只要服务器对该请求做出响应，域中存的值就没有了。
+
+- session【HttpSession】
+
+  作用域限于一次会话当中（多次请求与响应）。
+
+- application 【ServletContext】
+
+  整个工程都可以访问，服务器关闭后不能访问。
+
+以上四个是作用域对象。即这些对象可以存值，其取值范围有限定。
+
+- out 【JspWriter】
+
+- exception 【Throwable】
+
+- config 【ServletConfig】
+
+- page 【Object】
+
+  负责将jsp翻译成java的实例对象
+
+- response 【HttpServletResponse】
+
+#### EL表达式
+
+> 作用：为了简化在JSP里写的Java代码。只能做取值。
+
+写法： `${表达式}`，例输出四个作用域中的值：
+
+```jsp
+${pageScope.name} //输出pageContent中key为'name'的值
+${array[0]}  //取出域中存的数组中的值
+${map.name}  //取出域中所存的map中key为name的值
+${map[address.aa]} //取出map中key为"address.aa"的值
+```
+
+#### JSTL
+
+> Jsp Standard Tag Library，Jsp标准标签库。用于替换<%%>的写法，一般与EL表达式组合。
+
+常用标签：
+
+```jsp
+<c:set></c:set>
+<c:if test="${EL表达式}" var="" scope=""></c:if> <!--检查EL表示是否为真，以此执行标签中的语句--><!--var:定义一个变量存储前面表达式的值，存储到scope指定的域中-->  
+<c:foreach begin="" end="" var="" step="" item=""></c:foreach> <!--begin：开始遍历 end：结束遍历 step：步进 var：遍历的结果会赋值到该处定义的中间变量中 item:从session中获取可遍历的对象-->
+```
+
+使用步骤：
+
+```jsp
+<!--使用前，现在jsp文件中导入jar文件-->
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!--使用以上标签来对数据进行操作-->
+```
+
+
+
+#### 事务，数据库连接池
+
+##### 事务
+
+> 一组操作的合集，其中的操作语句要么都执行，要么都不执行
+
+- 在Java中使用事务
+
+  ```java
+  conn.setAutoCommit(false); //首先关闭自动提交
+  ...； //业务逻辑
+  conn.commit(); //提交事务，使修改生效
+  //如果出现异常
+  conn.rollback(); //回滚事务
+  ```
+
+  事务只针对当前连接，不针对表。
+
+##### 数据库连接池
+
+- 开源连接池 DBCP，C3P0
+- 
 
 ### Maven使用简介
 

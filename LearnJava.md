@@ -212,7 +212,7 @@ CTRL+ALT+↑ //向上复制一行
   - 抽象类   被继承体现的是"is a "的关系，抽象类中定义的是该继体系的共性功能
   - 接口       被实现的是"like a"的关系，接口中定义的是该继承体系的扩展功能
 
-###四种权限修饰符的作用
+### 四种权限修饰符的作用
 
 |                    | 本类 | 同一个包下子类与无关类 | 不同包下子类 | 不同包下无关类 |
 | :----------------: | :--: | :--------------------: | :----------: | :------------: |
@@ -665,6 +665,79 @@ String concat(String str) //拼接字符串
 
 - 泛型接口的概述和定义
 
+### 反射
+
+> 将类的各个部分(成员变量，构造方法，成员方法)封装为其他对象，称为反射机制。
+
+反射的优点：
+
+1. 可以在程序运行过程中操作这些对象
+2. 可以解耦合，提高程序的可扩展性
+
+反射机制将类的字节码文件封装为一个`Class`对象，其中有三个属性
+
+|    属性     |             作用             |
+| :---------: | :--------------------------: |
+|    Field    | 将类中的成员变量封装为此对象 |
+| Constructor |  将类的构造函数封装为此对象  |
+|   Method    |    将成员方法封装为此对象    |
+
+获取一个类的`Class`对象的三种方法
+
+```java
+<类名>.class //返回一个指定类名的类的Class对象
+Class.forName(<包名+类名>)
+object.getClass() //返回一个此对象所属类的Class对象
+```
+
+三种方法的使用场景:
+
+      1. 常用于开发中的参数传递；
+         2. 常用于配置文件中，例如数据库连接池中配置JDBC驱动
+         3. 常用于开发中。
+
+`Class`类中的成员方法
+
+| 方法                                 |                作用                |            备注            |
+| :----------------------------------- | :--------------------------------: | :------------------------: |
+| Field[]  getDeclaredFields();        |     获取所有成员变量，返回数组     | 可以获取所有权限的成员变量 |
+| Field[]  getFields();                | 获取所有public的成员变量，返回数组 |  只能获取public的成员变量  |
+| Field  getField(String);             |       获取指定名称的成员变量       |  只能获取public的成员变量  |
+| Method  getMethod(String, Obj.class) |  根据方法名和参数列表类型获取方法  |    只能获取public的方法    |
+| Constructor[] getConstructors()      |          获取所有构造函数          |    只能获取public的构造    |
+
+### 注解
+
+- jdk内置的注解：
+
+  ```java
+  @Deprecated //表示资源已被取代
+  @Override  //表示重写父类方法
+  @SuppressWarnings("all") //忽略所有警告
+  ```
+
+- 自定义注解
+
+  - 格式
+
+    ```java
+    元注解
+    public @interface anno_name{}
+    ```
+
+  - 注解本质上是一个接口，它继承自`Annotation`接口
+
+  - 元注解：用于描述注解的注解、
+
+    - @Target：描述注解的作用位置
+    - @Retention：描述注解被保留的阶段
+    - @Document：描述注解是否被抽取到API文档中
+    - @Inherited：描述注解是否被子类继承
+
+  - 
+
+- 
+
 ### Map的概述及用法
 
 - 一个可变长度的键值对的双列集合
@@ -704,6 +777,8 @@ public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
 ### Data 类概述与使用
 
 > Data类是Java.util提供的封装当前日期和时间的类
+
+### 异常
 
 
 
@@ -1123,13 +1198,31 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
    2. request：浏览器传给服务端的数据，里面通常包含要提交的表单信息
 
       ```java
-      request.getParameter("<输入框name>") //使用该方法提取request中的表单信息
+      request.setCharacterEncoding("utf-8"); //解决post中文数据乱码
+      String request.getParameter("<输入框name>"); //使用该方法提取request中的表单信息
+   String[] getParameterValues(String name); //获取多个参数值
+      Enumeration<String> getParameterNames(); //获取所有的请求参数key
+   Map<String,String[]> getParameterMap(); //获取所有参数键值的map集合
       ```
 
-      
+      - 请求转发：在服务器内部的资源跳转，将当前请求转发到其他servlet。
+   
+        ```java
+        request.getRequestDispatcher("要跳转的Servlet").forward(request,response);
+        ```
+   
+        特点：
 
+        1. 浏览器路径不发生变化
+   
+           2. 只能转发到当前服务器内部资源
+   
+           3. 转发是一次请求
+   
+              
+   
    3. response：服务端返回给客户端的信息
-
+   
       ```java
       PrintWriter response.getWriter(); //返回一个PrintWriter对象
       pw.write(<要返回的字符串>)；
@@ -1137,8 +1230,7 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
       response.setCharacterEncoding(); //设置返回的字符集
       response.setContentType("text/html;charset=UTF-8"); //设置浏览器以什么字符集解析页面
       ```
-
-   4. 
+   
 
 #### Cookie和Session
 
@@ -1242,7 +1334,7 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
 
 > 指令的写法：<%@ 指令名 指令参数=...%>
 
-1. Page指令
+1. Page指令：用于配置JSP页面
    
    该指令各参数的意义：
    
@@ -1267,11 +1359,11 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
    
      用于声明某一个页面是不是错误跳转页面
    
-2. Include指令
+2. Include指令：导入页面的资源文件
 
    用于包含另一个jsp文件的内容进来。
 
-3. taglib指令
+3. taglib指令：标签库 ，即外置的jar包
 
 ##### JSP动作标签
 
@@ -1299,7 +1391,7 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
 
 - out 【JspWriter】
 
-- exception 【Throwable】
+- exception 【Throwable】：只有在isErrorPage为ture时该对象才能使用。
 
 - config 【ServletConfig】
 
@@ -1311,7 +1403,23 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
 
 #### EL表达式
 
-> 作用：为了简化在JSP里写的Java代码。只能做取值。
+> 作用：为了简化在JSP里写的Java代码。用于运算或者获取值。
+
+- EL表达式的运算符：
+
+  >1.算术运算符
+  >
+  >2.逻辑运算符
+  >
+  >3.比较运算符
+  >
+  >4.空运算符：empty
+  >
+  >​	用于判断字符串，集合，数组对象是否为null并且长度是否为零。
+  >
+  >​	例：${empty list}
+
+- 
 
 写法： `${表达式}`，例输出四个作用域中的值：
 
@@ -1320,6 +1428,7 @@ ${pageScope.name} //输出pageContent中key为'name'的值
 ${array[0]}  //取出域中存的数组中的值
 ${map.name}  //取出域中所存的map中key为name的值
 ${map[address.aa]} //取出map中key为"address.aa"的值
+${pageContext.request.contextPath} //动态获取虚拟目录
 ```
 
 #### JSTL
@@ -1364,8 +1473,972 @@ ${map[address.aa]} //取出map中key为"address.aa"的值
 
 ##### 数据库连接池
 
-- 开源连接池 DBCP，C3P0
-- 
+- 开源连接池 Druid，C3P0
+
+- C3P0的使用
+
+  1. 导入jar包
+  2. 定义配置文件：c3p0.properties 或者 c3p0.xml，将配置文件放置于Source Root路径下。
+  3. 创建连接池对象 ComboPooledDataSource
+  4. 获取连接对象 getConnection()
+
+- Druid使用
+
+  1. 导入jar以及jdbc驱动：druid.jar
+
+  2. 定义配置文件：
+
+     1. 配置文件为propertites
+     2. 名称不限，放在任意目录下，需手动加载
+
+     ```properties
+     #配置文件内容
+     driverClassName=com.mysql.jdbc.Driver
+     url=jdbc:mysql://localhost:3306/test?serverTimezone=UTC
+     username=root
+     password=admin
+     initialSize=5
+     maxActivate=10
+     maxWait=3000
+     ```
+
+  3. 通过工厂类获取连接池对象  DruidDataSourceFactory
+
+     ```java
+     Properties profile = new Properties();         profile.load(JDBCutils.class.getClassLoader().getResourceAsStream("druid.properties"));
+     ds = DruidDataSourceFactory.createDataSource(profile);
+     ```
+
+  4. 获取连接
+
+     ```java
+     ds.getConnection();
+     ```
+
+##### JDBCutils
+
+```java
+public class JDBCutils {
+
+    public static DataSource ds;
+
+    static {
+
+        try {
+
+            Properties profile = new Properties();
+            profile.load(JDBCutils.class.getClassLoader().getResourceAsStream("druid.properties"));
+            		            
+            ds = DruidDataSourceFactory.createDataSource(profile);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return ds.getConnection();
+    }
+
+    public static DataSource getDataSource() {
+        return ds;
+    }
+
+    public static void close(Statement stmt,Connection conn){
+        close(null,stmt,conn);
+    }
+
+
+    public static void close(ResultSet rs, Statement stmt, Connection conn){
+
+        if(rs != null){
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (stmt != null){
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if(conn != null){
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+##### JDBC Template
+
+> Spring框架对JDBC的简单封装，提供了一个JDBC template对象。简化执行数据库操作过程，让开发者专注于SQL语句和执行。
+
+使用步骤：
+
+1. 导入jar
+
+2. 创建jdbc template对象，依赖于数据源
+
+   ```java
+   JdbcTemplate jt = new JdbcTemplate(ds);
+   ```
+
+   调用JdbcTemplate方法来完成操作。
+
+   ```java
+   update(sql); //执行增删改语句
+   queryForMap(sql,args...); //查询结果封装为map 只适用于结果为一条记录，将列名作为key，值为                               value
+   queryForList(sql,args...); //查询结果封装为List 将单条记录封装为Map，并将所有Map封装为List
+   queryForObject(sql,Integer.class); //结果封装为基本数据类型对象,一般用于聚合函数查询
+   query(sql,new BeanPropertyRowMapper<T>(T.class)); //结果封装为javaBean对象,返回                                                           javaBean对象的List集合
+   ```
+   
+   注意：查询返回的结果集即使为空，返回的`List`也不为`null`，而只是一个空集合，要用`size()`来判断其是否为空，而不能单纯判断其是否为`null`。
+
+#### Filter
+
+- 过滤器细节
+
+  - web.xml配置
+
+    ```xml
+    <!--该配置用于向web服务器注册一个Filter-->
+    <filter>
+      	<filter-name>{实现filter接口的类名}</filter-name>
+      	<filter-class>{包名.类名}</filter-class>
+      </filter>
+    
+    <!--该配置用于创建一个指向Filter的拦截url -->
+      <filter-mapping>
+      	<filter-name>{类名}</filter-name>
+      	<url-pattern>/{自定义url名}</url-pattern>
+      </filter-mapping>
+    ```
+
+  - 过滤器的执行流程
+
+    1. 过滤器拦截请求
+    2. 过滤器放行请求
+    3. 请求到达服务器申请资源
+    4. 请求返回过滤器，执行放行代码后的操作。
+
+  - 过滤器的生命周期方法
+
+    - init()：服务器启动后，会创建Filter对象，然后调用init()方法，只执行一次
+    - doFilter()：每一次请求拦截时都执行
+    - destory()：服务器关闭后，Filter对象被销毁，若服务器正常关闭，则执行destory方法，只执行一次。
+
+  - 过滤器配置详解
+
+    - 拦截路径配置
+
+      1. 具体拦截路径：/index.jsp   只有访问jsp资源时，过滤器才执行
+      2. 拦截目录：/user/*               访问user目录下的资源时过滤器执行
+      3. 后缀名拦截：*.jsp                访问所有jsp资源时，过滤器执行
+      4. 拦截所有资源：/*
+
+    - 拦截方式配置：资源被访问的方式拦截
+
+      1. 注解配置：
+
+         - 设置dispatchTypes属性
+           1. REQUEST：默认值。浏览器直接请求资源
+           2. FORWARD：转发访问资源
+           3. INCLUDE：包含访问资源
+           4. ERROR：错误跳转资源
+           5. ASYNC：异步访问资源
+
+      2. web.xml配置：
+
+         配置<dispatcher></dispatcher>标签即可
+
+  - 过滤器链(多个过滤器)
+
+    - 执行顺序：
+      1. 过滤器1
+      2. 过滤器2
+      3. 资源执行
+      4. 过滤器2
+      5. 过滤器1
+    - 过滤器执行优先级
+      - 注解配置：按照过滤器类名的字符串比较规则，类名中的字符逐个比较，值小的先执行
+      - web.xml配置：定义在上面的先执行
+
+    
+
+#### Listener
+
+> 监听器，wen三大组件之一
+
+- 事件监听机制：
+  1. 事件：一件事情
+  2. 事件源：事件发生的地方
+  3. 监听器：一个对象
+  4. 注册监听：将事件，事件源，监听器绑定在一起。当事件源上发生某个事件后，执行监听器
+- `ServletContextListener`：监听`ServletContext`对象的创建和销毁
+
+#### Ajax和JQuery
+
+##### JQuery
+
+> 一个Js的方法库
+
+1. 获取元素：
+
+   ```js
+   var obj = $("选择器"); //返回一个jq对象，可以看做一个数组
+   ```
+
+2. Js和Jq对象相互转换
+
+   - Js -> Jq：`$(js对象)`
+   - Jq -> Js：`Jq对象.get(index)`
+
+3. 事件绑定&&入口函数
+
+   
+
+4. 选择器
+
+   1. 基本选择器
+
+      1. 标签选择器（元素选择器）
+
+         ```js
+         $("htmlTag")
+         ```
+
+      2. id选择器
+
+         ```js
+         $("#id")
+         ```
+
+      3. 类选择器
+
+         ```js
+         $(".classname")
+         ```
+
+      4. 并集选择器
+
+         ```js
+         $("选择器1,选择器2 ...")
+         ```
+
+         
+
+   2. 层级选择器
+
+      1. 后代选择器
+
+         ```js
+         $("A B") //选择A元素内部的所有B元素
+         ```
+
+      2. 子选择器
+
+         ```js
+         $("A > B") //选择A元素内部所有B元素的子元素
+         ```
+
+   3. 属性选择器
+
+      1. 属性名称选择器
+
+         ```js
+         $("A[属性名]") //包含指定属性的选择器
+         ```
+
+      2. 属性选择器
+
+         ```js
+         $("A[属性名=值]") //包含指定属性等于指定值的选择器
+         ```
+
+      3. 复合属性选择器
+
+         ```js
+         $("A[属性名=值][]") //包含多个指定属性条件的选择器
+         ```
+
+   4. 过滤选择器
+
+      1. 首元素选择器
+
+         ```js
+         :first //获取第一个元素 
+         ```
+
+      2. 尾元素选择器
+
+         ```js
+         :last //获取最后一个元素
+         ```
+
+      3. 非元素选择器
+
+         ```js
+         :not(selector) //不包含指定内容的元素
+         ```
+
+      4. 偶数选择器
+
+         ```js
+         :even //偶数，从零开始计数
+         ```
+
+      5. 奇数选择器
+
+         ```js
+         :odd //奇数，从零开始计数
+         ```
+
+      6. 等于索引选择器
+
+         ```js
+         :eq(index) //指定索引元素
+         ```
+
+      7. 大于索引选择器
+
+         ```js
+         :gt(index) //大于指定元素
+         ```
+
+      8. 小于索引选择器
+
+         ```js
+         :lt(index) //小于指定元素
+         ```
+
+      9. 标题选择器
+
+         ```js
+         :header //获得标题元素，固定写法
+         ```
+
+   5. 表单过滤选择器
+
+      1. 可用元素选择
+
+         ```js
+         :enabled //获得可用元素
+         ```
+
+      2. 不可用元素选择器
+
+         ```js
+         :disabled //不可用过滤选择器
+         ```
+
+      3. 选中选择器
+
+         ```js
+         :checked //获得单选(复选框)选中的元素
+         ```
+
+      4. 选中选择器
+
+         ```js
+         :selected //获得下拉框选中的元素
+         ```
+
+5. DOM操作
+
+   1. 内容操作
+
+      1. html()：
+
+         ```javascript
+         .html() //获取标签体内容
+         ```
+
+      2. text()：
+
+         ```js
+         .text() //
+         ```
+
+      3. val()
+
+         ```js
+         .val() //获取输入框中的内容
+         ```
+
+   2. 属性操作
+
+      1. 通用属性操作
+
+         1. attr()：获取/设置元素的属性
+
+            ```js
+            $("#id").attr("属性") //获取属性
+            $("#id").attr("属性","值") //修改属性
+            ```
+
+         2. removeAttr()：删除元素的属性
+
+         3. prop()：获取/设置元素的属性
+
+         4. removeProp()：删除元素的属性
+
+      2.  对class属性操作
+
+         1. addClass()：添加class属性值
+
+            ```js
+            $("#id").addClass("值") //给指定id的元素的class属性添加指定的值
+            ```
+
+         2. removeClass()：删除class属性值
+
+            ```js
+            $("#id").removeClass("值") //给指定id的元素的class属性删除值
+            ```
+
+         3. toggleClass()：切换class属性值
+
+            ```js
+            $("#id").toggleClass("one") //若指定id的元素存在class=one，则删除该class，若没                               有，则添加该class
+            ```
+
+   3. CRUD操作
+
+      1. append()：父元素将子元素追加到末尾
+
+      2. remove()：移除元素
+
+         ```js
+         对象.remove() //将对象删除掉
+         ```
+
+      3. empty()：清空元素的所有后代元素
+
+         ```js
+         对象.empty() //将对象的后代元素清空，但保留该对象及其属性节点
+         ```
+
+6. 动画效果和遍历方式
+
+   -  动画效果
+
+      1. 默认显示和隐藏方式
+
+         1. show([speed,[easing],[fn]])
+      
+            参数：
+
+            1. speed：动画的速度，三个预定义的值(“slow”,”normal”,”fast”)或动画的毫秒值(1000)
+            2. easing：用来指定切换效果：默认是“swing”，可用参数“linear”
+            3. fn：一个函数，在方法执行完后执行该函数
+      
+            ```js
+      $("#id").show();
+            ```
+
+         2. hide([speed,[easing],[fn]])
+
+         3. toggle([speed],[easing],[fn])
+
+      2. 滑动显示和隐藏方式
+
+         1. slideDown([speed],[easing],[fn])
+         2. slideUp([speed],[easing],[fn])
+         3. slideToggle([speed],[easing],[fn])
+      
+      3. 淡入淡出显示和隐藏
+      
+         1. fadeIn([speed],[easing],[fn])
+      2. fadeOut([speed],[easing],[fn])
+         
+         3. fadeToggle([speed],[easing],[fn])
+      
+   - 遍历方式
+   
+     1. jq对象.each(callback)
+   
+        ```js
+        cities.each(function(index,element){
+            alert(index + " " + element);
+        });
+        ```
+   
+     2. $.each(obj,callback)
+   
+        ```js
+        $.each(cities,function(){
+            alert($(this).html());
+        });
+        ```
+   
+     3. for ... of
+   
+        ```js
+        for(li of cities){
+            alert(li.innerHTML);
+        }
+        ```
+   
+   -  事件绑定
+   
+      1. jquery标准的绑定方式
+   
+         ```js
+         jq对象.事件方法(回调函数);
+         ```
+   
+      2. on绑定对象/off解除绑定
+   
+         ```js
+         jq对象.on("事件名称",回调函数)
+         jq对象.off("事件名称")
+         ```
+   
+      3. 事件切换：toggle 
+   
+         ```js
+         jq对象.toggle(fun1,fun2) //单击对象后，会交替执行fun1和fun2
+         ```
+   
+7. JQuery插件机制
+
+   > 用于增强JQuery的功能
+
+   - 实现方法
+
+     1. $.fn.extend(obj)
+
+        用于增强jq所获取的DOM对象，仅DOM对象可用
+
+        ```js
+        $.fn.extend({
+            //定义一个check()方法，所有JQ对象都可以调用该方法 
+            check:function(){
+               ...
+            }
+        });
+        ```
+
+     2. $.extend(obj)
+
+        用于增强jq对象本身，用于全局可调用该方法
+
+##### Ajax
+
+> Ajax可以实现在不加载整个网页的情况下，更新部分网页的技术。
+
+- 实现方式：
+
+  - 原生的`JS`实现：
+
+    ```js
+    //创建核心对象
+    var xmlhttp;
+    if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+      xmlhttp=new XMLHttpRequest();
+      }
+    else
+      {// code for IE6, IE5
+      xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+    //发送请求
+    /*
+    参数1：请求方式(GET || POST)
+        * GET方式，请求参数在URL后面拼接，send方法为空参。
+        * POST方法，请求参数在send方法中定义
+    参数2：URL
+    参数3：同步(false)或异步(true)
+    */
+    xmlhttp.open("GET","test1.txt",true);
+    xmlhttp.send(string); //若请求方法为POST，则在该方法中定义请求参数
+    //接受响应信息
+    xmlhttp.onreadystatechange=function()
+      {
+        //判断readyState就绪状态是否为4，Status响应状态码是否为200
+      if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            //获取服务器响应结果
+        	document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+        }
+      }
+    ```
+
+  - `JQuery`实现方式：
+
+    1. `$.ajax()`：
+
+       ```js
+       $.ajax({
+           url:"" , //请求链接
+           type:"" , //请求方式，GET或POST
+           data:{"key":"value"} , //请求参数
+           success:function(){} , //响应成功后自动执行的回调函数
+           error:function(){} ,  //响应失败后的回调函数
+           dataType:"" , //设置接收到的响应数据格式
+       });
+       ```
+
+    2. `$.get()`：专用于`GET`请求的实现
+
+       ```js
+       $.get(url, [data], [callback], [type])
+       //参数列表:请求URL，请求参数，回调函数，响应数据格式
+       //例
+       $.get("",  //请求URL
+             {},  //请求参数
+             function(){}, //回调函数
+             "");   //响应数据格式
+       ```
+
+    3. `$.post()`：专用于实现`POST`请求
+
+##### JSON
+
+>  JSON：JavaScript 对象表示法(JavaScript Object Notation)
+
+- 语法：
+
+  JSON 语法是 JavaScript 对象表示法语法的子集。
+
+  - 数据在键值对中
+  - 数据由逗号分隔
+  - 花括号保存对象
+  - 方括号保存数组
+
+  JSON 值可以是：
+
+  - 数字（整数或浮点数）
+  - 字符串（在双引号中）
+  - 逻辑值（true 或 false）
+  - 数组（在方括号中）
+  - 对象（在花括号中）
+  - null
+
+- JSON和Java对象相互转换
+
+  - JSON解析器：Jsonlib，Gson，Fastjson，jackson
+
+  - Java对象转Json：
+
+    - jackson实现：
+
+      ```java
+      //创建jackson核心对象 ObjectMapper
+      ObjectMapper mapper = new ObjectMapper();
+      //序列化为json字符串
+      String json = mapper.writeValueAsString(obj);
+      ```
+
+      注解：将注解加在要作用的属性上方以使其生效
+
+      1. @JsonIgnore：排除属性
+
+      2. @JsonFormat：属性格式化
+
+         > 例：@JsonFormat(“yyyy-MM-dd”)  格式化日期
+
+  - Json字符串转Java对象：
+
+    ```java
+    Obj obj = mapper.readValue(json,Obj.Class);
+    ```
+
+### Mybatis
+
+> 一个java编写的持久层框架，封装了jdbc操作的细节，使用了ORM思想实现了结果集封装，使开发者可以着眼于SQL语句本身。
+
+#### 配置过程
+
+- 配置Mybatis主配置文件
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE configuration  
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  <!--Mybatis的主配置文件-->
+  <configuration>
+      <!--配置环境-->
+      <environments default="mysql">
+          <!--配置Mysql环境-->
+          <environment id="mysql">
+              <!-- 配置事务的类型-->
+              <transactionManager type="JDBC"></transactionManager>
+              <!--配置数据源（连接池）-->
+              <dataSource type="POOLED">
+                  <!--配置连接参数-->
+                  <property name="driver" value="com.mysql.jdbc.Driver"/>
+                  <property name="url" value="jdbc:mysql://localhost:3306/eesy_mybatis?serverTimezone=Asia/Shanghai"/>
+                  <property name="username" value="root"/>
+                  <property name="password" value="admin"/>
+              </dataSource>
+          </environment>
+      </environments>
+      <!--指定映射配置文件的位置，映射配置文件是指每个dao独立的配置文件-->
+  	<mappers>
+          <mapper resource="info/fangou/dao/UserDao.xml"/>
+      </mappers>
+  </configuration>
+  ```
+
+- 配置DAO映射配置文件
+
+  每一个dao一个映射配置文件，映射配置文件的路径必须与dao的包结构一致
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper
+          PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!--namespace为dao接口的全限定类名-->
+  <mapper namespace="info.fangou.dao.UserDao">
+      <!-- 配置查询所有 -->
+      <!-- id为dao内定义的方法名 resultType为返回的实体类全限定类名-->
+      <select id="findAll" resultType="info.fangou.domain.User">
+          select * from user;
+      </select>
+  
+      <!-- 配置模糊查询，parameterType为传入参数类型，CONCAT为SQL字符串拼接函数-->
+      <select id="findByName" resultType="info.fangou.domain.User" parameterType="String">
+          select * from user where username like CONCAT('%',#{name},'%')
+      </select>
+  
+      <delete id="deleteUser" parameterType="int">
+          delete from user where id = #{id}
+      </delete>
+  
+      <update id="updateUser" parameterType="info.fangou.domain.User">
+          update user set username = #{username},birthday = #{birthday},sex = #{sex},address = #{address} where id=#{id}
+      </update>
+  
+      <insert id="saveUser" parameterType="info.fangou.domain.User">
+          insert into user(username, birthday, sex, address) value (#{username}, #{birthday}, #{sex}, #{address})
+      </insert>
+  
+  </mapper>
+  ```
+
+- Mybatis执行过程案例
+
+  ```java
+  		//1.读取配置文件
+          InputStream is = Resources.getResourceAsStream("SqlMapConfig.xml");
+          //2.创建SqlSessionFactory工厂
+          SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+          SqlSessionFactory factory = builder.build(is);
+          //3.使用工厂创建Sqlsession对象
+          SqlSession sqlSession = factory.openSession();
+          //4.使用SqlSession对象创建dao的代理对象
+          UserDao userDao = sqlSession.getMapper(UserDao.class);
+          //5.使用代理对象执行方法
+          List<User> userList = userDao.findAll();
+          for (User user : userList) {
+              System.out.println(user);
+          }
+          //6.释放资源
+          sqlSession.close();
+          is.close();
+  ```
+  
+- 数据库列名与实体类属性名不对应
+
+  > 使用resultMap可以解决以上不对应的问题
+
+  ```xml
+  <!--id为该resultMap的唯一标识，type为Java实体类全限定类名-->
+  <resultMap id="userMap" type="info.fangou.domain.User">
+      <!--主键的对应关系，property为实体类中的属性，column为数据库中的字段-->
+      <!--javaType:实体类中的数据类型，jdbcType:数据库中的数据类型-->
+      <id property="" column="" javaType="" jdbcType=""></id>
+      <!--非主键属性对应关系--> 
+      <result property="" column="" javaType="" jdbcType=""></result>
+  </resultMap>
+  ```
+
+  在SQL语句中启用以上`resultMap`：
+
+  ```xml
+  <select id="findAll" resultMap="userMap">
+     select * from user
+  </select>
+  ```
+
+#### 使用注解
+
+1. 修改主配置文件
+
+   ```xml
+       <!--指定映射配置文件的位置，映射配置文件是指每个dao独立的配置文件-->
+       <!--若使用注解，则使用class属性指定dao的全限定类名-->
+       <mappers>
+           <mapper class="info.fangou.dao.UserDao"/>
+       </mappers>
+   </configuration>
+   ```
+
+2. 删除dao映射配置文件，并在dao方法上加注解
+
+   ```java
+   @Select("select * from user")
+   List<User> findAll();
+   ```
+
+3. 注解实现CRUD操作
+
+   在Dao接口内做如下编写
+
+   ```java
+   public interface UserDao {
+   
+       @Select("select * from user")
+       List<User> findAll();
+   
+       @Insert("insert into user(username,birthday,sex,address) values(#{username},#{birthday},#{sex},#{address})")
+       void saveUser(User user);
+   
+       @Update("update user set username=#{username},birthday=#{birthday},sex=#{sex},address=#{address} where id=#{id}")
+       void updateUser(User user);
+   
+       @Delete("delete from user where id = #{id}")
+       void deleteUser(Integer id);
+       
+       //模糊查询的实现
+       @Select("SELECT * FROM `user` WHERE username LIKE CONCAT('%',#{name},'%')")
+       List<User> findByName(String name);
+       
+    //使用聚合函数
+       @Select("select count(id) from user")
+       int findTotal();
+   }
+   ```
+   
+   以上为基本的增删改查实现。
+
+#### 连接池以及事务控制
+
+- Mybatis中的连接池配置
+
+  - mybatis提供了三种连接池配置方式
+
+    1. 主配置文件中的`dataSource`标签，`type`属性表示采用何种连接方式
+
+       `Type`的取值：
+
+       - POOLED：采用连接池的思想，实现`javax.sql.DataSource`规范。
+       - UNPOOLED：采用传统获取连接的思想，没有连接池，实现`javax.sql.DataSource`规范。
+       - JNDI：采用服务器的`JNDI`技术获取`DataSource`对象，非`web`或`maven`的`war`工程不能使用。
+
+- Mybatis的事务特点
+
+  - 事务实现：通过`sqlsession`对象的`commit`方法和`rollback`方法实现事务的提交和回滚。
+
+  - 设置事务自动提交：
+
+    ```java
+    //传入一个true值
+    SqlSession sqlSession = factory.openSession(true);
+    ```
+
+#### 动态SQL
+
+> 可以实现不同个数的条件执行查找
+
+- `where`标签：加在SQL语句之后，用来包裹其他标签
+
+- `if`标签：条件选择标签，用于选择哪一个删选条件成立
+
+- `foreach`标签：用于子查询，查询条件为一个集合
+
+  ```xml
+  <!--查询条件为多个，并且不一定同时成立-->
+  <select id="findByContent" parameterType="info.fangou.domain.User" resultType="info.fangou.domain.User">
+          select * from user
+          <where>
+              <if test="username != null">
+                  and username = #{username}
+              </if>
+  
+              <if test="sex != null">
+                  and sex = #{sex}
+              </if>
+          </where>
+      </select>
+  <!--查询条件为一个集合，需要调用子查询-->
+      <select id="findEach" resultType="info.fangou.domain.User" parameterType="info.fangou.domain.QueryVo">
+          select * from user
+          <where>
+              <if test="ids != null and ids.size() != 0">
+                  <foreach collection="ids" open="id in (" close=")" item="idi" separator=",">
+                      #{idi}
+                  </foreach>
+              </if>
+          </where>
+      </select>
+  ```
+
+- 抽取重复的SQL语句
+
+  ```xml
+  <!--用于包裹需要抽取的重复sql语句-->
+  <sql id="defaultSql">
+          select * from user <!--此处不能加分号-->
+  </sql>
+  <!--在需要引用以上sql语句的地方使用该标签-->
+  <include refid="defaultSql"></include>
+  ```
+
+
+
+#### Mybatis中的多表操作
+
+- ONGL表达式
+
+  > 对象图导航语言，可以通过`对象名.属性名`来直接获取属性值
+
+- 左外连接获取双表数据
+
+  `resultMap`配置，现在要输出的实体类中加入另一实体类的声明。
+
+  ```xml
+  <resultMap id="userMap" type="info.fangou.domain.User2">
+          <id property="id" column="id" ></id>
+          <result property="username" column="username"></result>
+          <result property="birthday" column="birthday"></result>
+          <result property="sex" column="sex"></result>
+          <result property="address" column="address"></result>
+  		<!--配置user实体类中account集合的映射-->
+      	<!--property：user实体类中集合的对象标识符，ofType：account实体类的全限定类名-->
+          <collection property="accounts" ofType="info.fangou.domain.Account">
+              <id property="ID" column="ID" ></id>
+              <result property="UID" column="UID"></result>
+              <result property="MONEY" column="MONEY"></result>
+          </collection>
+  </resultMap>
+  ```
+
+  SQL语句编写
+
+  ```xml
+  <select id="findAll2" resultMap="userMap">
+          SELECT * FROM `user` LEFT JOIN `account` ON `user`.id = `account`.UID;
+  </select>
+  ```
+
+#### 延迟加载与立即加载
+
+
 
 ### Maven使用简介
 
@@ -1398,3 +2471,26 @@ ${map[address.aa]} //取出map中key为"address.aa"的值
    | groupId      | 这是工程组的标识。它在一个组织或者项目中通常是唯一的。例如，一个银行组织 com.companyname.project-group 拥有所有的和银行相关的项目。 |
    | artifactId   | 这是工程的标识。它通常是工程的名称。例如，消费者银行。groupId 和 artifactId 一起定义了 artifact 在仓库中的位置。 |
    | version      | 这是工程的版本号。在 artifact 的仓库中，它用来区分不同的版本。例如：com.company.bank:consumer-banking:1.0                                    com.company.bank:consumer-banking:1.1 |
+
+3. Maven仓库的种类
+
+   
+
+4. Maven命令
+
+   |    命令     |       作用       |
+   | :---------: | :--------------: |
+   |  mvn clean  | 清除项目编译信息 |
+   | mvn compile |     编译项目     |
+   |  mvn test   |     测试项目     |
+   | mvn package |     打包项目     |
+   | mvn install |     安装项目     |
+   | mvn deploy  |     发布项目     |
+
+5. pom文件中依赖的作用域
+
+   <scope>标签可以设定依赖的作用范围，其取值为`provided`：只在编译时作用；`test`：只在测试时作用
+
+6. 
+
+   

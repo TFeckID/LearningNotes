@@ -354,13 +354,13 @@ class Outer {
   char charAt(int index) //获取对应位置的字符
   int length() //获取字符串的长度
   char charAt(int index) //获取索引对应位置的字符
-  int indexOf(int ch) /*返回指定字符在字符串中第一次出现处的索引，                       若字符不存在，返回 -1。*/
-  int indexOf(String str) /*获取指定字符串中第一个字符在该字符串中                       第一次出现处的索引，若不存在，返回 -1。*/
-  int indexOf(String str,int fromIndex) /*获取指定字符串在对应                                         索引之后第一次出现的                                         位置的索引*/
-  int indexOf(char ch，int fromIndex) /*获取指定字符在指定索引后                                      第一次出现处的索引*/
-  int lastIndexOf(char ch) /*从字符串最后向前查找指定字符第一次出                            现的位置*/
-  String substring(int start)  /*从指定位置开始截取字符串，默认到                                行尾*/
-  String substring(int start，int end)  /*从指定位置开始到指定                     位置前结束截取字符串 （包含头，不包含尾）*/
+  int indexOf(int ch) /*返回指定字符在字符串中第一次出现处的索引，若字符不存在，返回 -1。*/
+  int indexOf(String str) /*获取指定字符串中第一个字符在该字符串中第一次出现处的索引，若不存在，返回 -1。*/
+  int indexOf(String str,int fromIndex) /*获取指定字符串在对应索引之后第一次出现的位置的索引*/
+  int indexOf(char ch，int fromIndex) /*获取指定字符在指定索引后第一次出现处的索引*/
+  int lastIndexOf(char ch) /*从字符串最后向前查找指定字符第一次出现的位置*/
+  String substring(int start)  /*从指定位置开始截取字符串，默认到行尾*/
+  String substring(int start，int end)  /*从指定位置开始到指定位置前结束截取字符串 （包含头，不包含尾）*/
   ```
 
 - String类的转换功能
@@ -743,10 +743,11 @@ object.getClass() //返回一个此对象所属类的Class对象
 - 一个可变长度的键值对的双列集合
 - HashMap：以哈希算法实现的Map
 - TreeMap：以二叉树实现的Map，和TreeSet一样可以自动排序
+- LinkedHashMap：按插入顺序排序的HashMap
 - Map接口的方法
 
 ```java
-V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原                        值，并返回原来的值
+V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并返回原来的值
 V get(Object key) //根据提供的键来返回值，若键不存在，则返回null
 void clear()  //移除所有的元素，清空集合
 V remove(Object key)  //根据键移除键值对元素，并返回被移除的值
@@ -1013,6 +1014,10 @@ public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
          <Context docBase = "" path=""></Context>
          <!-- docBase:要发布的文件实际存储路径 path:url中用于访问的虚拟路径-->
          ```
+
+#### Nginx按使用
+
+
 
 #### Http简介
 
@@ -2180,7 +2185,7 @@ public class JDBCutils {
               <dataSource type="POOLED">
                   <!--配置连接参数-->
                   <property name="driver" value="com.mysql.jdbc.Driver"/>
-                  <property name="url" value="jdbc:mysql://localhost:3306/eesy_mybatis?serverTimezone=Asia/Shanghai"/>
+                  <property name="url" value="jdbc:mysql://localhost:3306/eesy_mybatis?serverTimezone=UTC&characterEncoding=UTF-8"/>
                   <property name="username" value="root"/>
                   <property name="password" value="admin"/>
               </dataSource>
@@ -2275,7 +2280,7 @@ public class JDBCutils {
   </select>
   ```
 
-#### 使用注解
+#### 使用注解开发
 
 1. 修改主配置文件
 
@@ -2324,7 +2329,17 @@ public class JDBCutils {
    }
    ```
    
+4. 注解解决列名与实体类名不对应问题
+
+   ```java
+   @Results(value = {
+         @Result(id = false,column = "",property = "")//id：是否为主键，column：数据库字段名，property：实体类名
+   })
+   ```
+
    以上为基本的增删改查实现。
+
+
 
 #### 连接池以及事务控制
 
@@ -2438,6 +2453,337 @@ public class JDBCutils {
 
 #### 延迟加载与立即加载
 
+### Spring框架
+
+#### IOC的概念和作用
+
+> 控制反转，将创建对象的权利交给框架，是框架的重要特征。包括依赖注入和依赖查找。
+>
+> 作用：削减程序的耦合。
+
+##### Spring配置使用过程
+
+1. 配置文件
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+   	<!--配置javabean-->
+       <!--id为唯一识别字段，自定义；class为javabean的全限定类名-->
+       <bean id="..." class="...">
+           <!-- collaborators and configuration for this bean go here -->
+       </bean>
+   
+       <bean id="..." class="...">
+           <!-- collaborators and configuration for this bean go here -->
+       </bean>
+   
+       <!-- more bean definitions go here -->
+   
+   </beans>
+   ```
+
+2. 调用`Spring`获取Bean对象
+
+   ```java
+   //获取核心容器对象 
+   ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");//配置文件名
+   //获取Bean对象                      //配置文件中的id
+   AccountDao accountDao = ac.getBean("accountDao", AccountDao.class);
+   ```
+
+   - `ApplicationContext`的三个实现类
+
+     ```java
+     //只能加载类路径下的配置文件
+     ClassPathXmlApplicationContext("");
+     //可以加载任意路径下的配置文件
+     FileSystemXmlApplicationContext("");
+     //用于读取注解创建容器
+     AnnotationConfigApplicationContext("");
+     ```
+
+   - `BeanFactory`和`ApplicationContext`的区别
+
+     - 前者在创建对象策略上采用延迟创建，在对象使用时才创建，适用于多例对象创建；
+     - 后者策略采用立即创建，一读取完配置文件马上创建配置文件中的对象，适用于单例对象创建。
+
+##### Spring中Bean对象的生命周期
+
+1. 单例对象：随着容器的创建而创建，随容器的销毁而消亡，生命周期与容器相同。
+2. 多例对象：当使用对象时由`Spring`框架为我们创建，当长时间不使用且没有其他对象引用时由`Java`垃圾回收机制回收。
+
+##### Spring依赖注入
+
+> 依赖关系：当前类中需要用到其他类对象。由Spring管理对象间的依赖关系。
+>
+> 依赖注入：依赖关系的维护称之为依赖注入
+
+- 能够注入的数据类型：
+  1. 基本类型和`String`
+  2. 在配置文件中或注解配置过的其他`Bean`
+  3. 复杂类型 / 集合类型
+  
+- 注入的方式：
+
+  1. 使用构造函数注入
+  2. 使用`set`方法注入
+  3. 使用注解注入
+
+- 构造函数注入
+
+- `Set`方法注入
+
+  
+
+##### Spring的注解配置与使用
+
+- 注解的作用
+
+  1. 用于创建对象
+
+     > 等同XML配置中的<bean>标签
+
+     - @Component()
+
+       作用：将当前类存入容器
+
+       属性：value：用于指定bean的id，若不写则默认为类名首字母改小写。
+
+     - @Controller：通常用于表现层
+
+     - @Service：通常用于业务层
+
+     - @Repository：通常用于持久层
+
+       以上三个注解作用与`Component`相同，分别用在三层不同位置
+
+  2. 用于注入数据
+
+     > 等同XML配置中在<bean>标签内的<property>标签
+
+     - @autowired
+
+       作用：自动按照类型注入，只要容器中有唯一一个`bean`对象类型与要注入的变量类型匹配，就可以注入成功，当有两个或以上类型匹配的对象，则先根据类型划出匹配的范围，再将变量名作为`id`，寻找`id`匹配的对象，若找不到，则报错。
+       
+     - @qualifier
+
+       作用：按照类型注入的基础之上再按照名称注入，在给类成员注入时不能单独使用，给方法参数注入时可以单独使用。
+
+       属性：value：用于指定注入`bean`的`Id`。
+
+     - @resource
+
+       作用：直接按照`bean`的`id`注入，可独立使用。
+
+       属性：name：用于指定注入`bean`的`Id`。
+
+     - @value
+
+       作用：用于注入基本类型和`String`类型
+
+       属性：value：用于指定数据的值，也可以使用`SpEL`。
+
+  3. 用于改变作用范围
+
+     > 等同XML配置中在<bean>标签中的`scope`属性
+
+     - @scope
+
+       作用：用于指定`bean`的作用范围
+
+       属性：
+
+       ​	value：
+
+       ​		常用取值：`singleton`，`prototype`，单例模式或多例模式。
+
+  4. 生命周期相关
+
+     > 等同XML配置中在<bean>标签中的`init-method`和`destory-method`属性
+     
+     - @PreDestory：用于指定销毁方法
+     - @PostConstruct：用于指定初始化方法
+
+- 使用注解配置
+
+  1. 修改主配置文件
+
+     ```xml
+     <?xml version="1.0" encoding="UTF-8"?>
+     <beans xmlns="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         <!--添加context命名空间-->
+         xmlns:context="http://www.springframework.org/schema/context"
+         xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/context
+             http://www.springframework.org/schema/context/spring-context.xsd">
+     
+         <context:annotation-config/>
+     	<!--在此处写明使用接口的类的包名-->
+     	<context:component-scan base-package=""></context:component-scan>
+     </beans>
+     ```
+
+  2. 在类名上加注解
+
+     ```java
+     @Component("accountService")//注解内写明id，如不写明则id默认为类名首字母改小写(accountServiceImpl)
+     public class AccountServiceImpl implements AccountService {
+         
+     }
+     ```
+
+  3. 使用容器获取类对象
+
+     ```java
+     public class Main {
+         public static void main(String[] args) {
+     
+             ApplicationContext ac = new ClassPathXmlApplicationContext("bean.xml");
+             
+             AccountService accountService = ac.getBean("accountServiceImpl", AccountService.class);
+             
+         }
+     }
+     ```
+
+##### Spring的配置类与配置注解
+
+- 配置注解
+
+  - @Configuration
+
+    > 应用于一个类上，注明该类为Spring配置类
+
+    ```java
+    @Configuration
+    public class SpringConfig {
+        
+    }
+    ```
+
+  - @ComponentScan
+
+    > 用于通过注解指明Spring容器在创建时要扫描的包
+
+    ```java
+    @Configuration
+    @ComponentScan("") //通过属性指定创建容器时要扫描的包
+    @ComponentScan({"",""}) //如果有多个包，将包名用大括号包含
+    public class SpringConfig {
+    
+    }
+    ```
+
+  - @Bean
+
+    > 用于将当前方法的返回值作为bean对象存入Spring容器
+    >
+    > 属性：name  用于指定bean的id值。默认为当前方法名
+
+  - @Import
+
+    > 用于在配置类中导入其他配置类
+    >
+    > 属性：value  指定其他配置类的字节码文件数组(类名.class)
+
+  - @PropertySource
+
+    > 用于指定properties文件的路径
+    >
+    > 属性：value  指定文件的路径和文件名
+    >
+    > ​			关键字：classpath  表示类路径下
+
+    ```java
+    @PropertySource("classpath:profile.properties")
+    ```
+
+##### Spring整合Junit
+
+- 导入`Spring-test`
+
+  ```xml
+  <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>5.0.2.RELEASE</version>
+  </dependency>
+  ```
+
+- 使用注解替换原有的运行器
+
+  - @RunWith：指定运行器
+
+  - @ContextConfiguration：指定配置文件或配置类
+
+    属性：classes：若使用注解配置，则指定配置类的字节码文件
+
+    ​            locations：若使用配置文件，则指定配置文件类路径
+
+  ```java
+  @RunWith(SpringJUnit4ClassRunner.class)
+  @ContextConfiguration(classes = SpringConfig.class)
+  public class Test1 {
+      @Autowired
+      private AccountService accountService;
+      @Test
+      public void test1(){
+          accountService.save();
+      }
+  }
+  ```
+
+#### AOP的概念
+
+> 通过配置的方式，实现动态代理
+>
+> Joinpoint：连接点。指的是被拦截的点，在Spring中指方法，因为Spring只支持方法类型的连接点。
+>
+> Pointcut：切入点。指的是对哪些Joinpoint进行拦截的定义。
+>
+> Advice：通知/增强。通知是指拦截到Joinpoint后所要做的事情。
+>
+> ​				通知类型：前置通知，后置通知，异常通知，最终通知，环绕通知。
+>
+> Introduction：引介。引介是一种特殊的通知。在不修改类代码的前提下，其可以在运行期为类动态的添加一							些方法或Field。
+>
+> Target：目标对象。
+
+##### 配置AOP
+
+- 配置文件修改
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      <!--配置AOP命名空间-->
+      xmlns:aop="http://www.springframework.org/schema/aop"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/aop
+          http://www.springframework.org/schema/aop/spring-aop.xsd">
+  
+      
+  </beans>
+  ```
+
+- 
+
+
+
+
+
+
+
+
+
 
 
 ### Maven使用简介
@@ -2493,4 +2839,4 @@ public class JDBCutils {
 
 6. 
 
-   
+    

@@ -665,6 +665,8 @@ String concat(String str) //拼接字符串
 
 - 泛型接口的概述和定义
 
+
+
 ### 反射
 
 > 将类的各个部分(成员变量，构造方法，成员方法)封装为其他对象，称为反射机制。
@@ -781,9 +783,113 @@ public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
 
 ### 异常
 
+### 多线程
 
+#### 概念
 
+> 并发：指两个或多个任务在同一时间段内执行（交替执行）
+>
+> 并行：指两个或多个任务在同一时刻执行（同时执行）
 
+> 进程：一个在内存中运行的程序，每个进程都有独立的内存空间，一个应用可以同时运行多个进程；进程也是程序的一次执行过程，是系统运行程序的基本单位；系统运行一个进程即是一个进程从创建，运行到消亡的过程。
+>
+> 线程：线程是进程中的一个执行单元，负责当前进程中程序的执行；一个进程中可以有多个线程，这样的应用称为多线程程序。
+
+#### 线程调度
+
+- 分时调度
+
+  所有线程轮流使用CPU，平均分配每个线程占用CPU的时间
+
+- 抢占式调度
+
+  优先级高的线程先使用CPU，如果优先级相同，则随机选择一个线程。(Java为抢占式)
+
+#### 创建多线程程序的方式
+
+##### 1.Thread类
+
+> 继承Thread类，重写run()方法，并通过start()方法调用。
+
+```java
+public class MyThread extends Thread{
+    @Override
+    public void run() {
+        int i = 0;
+        for (i = 0; i < 10; i++) {
+            System.out.println("run:"+i);
+        }
+    }
+}
+
+MyThread mt = new MyThread();
+mt.start();
+```
+
+##### 2. Runable接口
+
+> 实现Runable接口，并重写run()方法
+
+```java
+public class MyRunable implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println("runable:" + i);
+        }
+    }
+}
+```
+
+> 使用Thread类调用以上
+
+```java
+Thread t = new Thread(new MyRunable());
+t.start();
+```
+
+#### 线程安全问题
+
+> 单线程程序不会出现线程安全问题；多线程程序，若没有访问共享数据，则不会有线程安全问题，若访问了共享数据，则将产生线程安全问题。
+
+##### 线程同步机制
+
+###### 1.同步代码块
+
+> 将可能出现线程安全问题的代码块放进同步代码块中
+
+```java
+Object o = new Object()
+synchronized (o){ ... }
+```
+
+同步代码块使用锁对象，所有线程执行抢占锁对象，抢到的线程进入执行，未抢到的线程进入阻塞等待状态，等待前进程归还锁对象，然后开始新一轮抢占。同步代码块保证了只有一个线程在同步中访问共享数据。程序频繁地判断锁，获取锁，释放锁，程序的效率会降低。
+
+###### 2. 同步方法
+
+> 使用`synchronized`修饰的方法，保证A线程在方法内执行时，其他线程在方法外等候。
+
+```java
+public synchronized void method(){ ... }
+```
+
+将可能出现线程安全问题的代码放入方法中。
+
+###### 3. 锁机制
+
+> Lock接口提供了锁机制，使用lock()和unlock()方法对出现线程安全问题的代码进行加锁和释放锁。
+
+```java
+Lock lock = new ReentrantLock();
+lock.lock()
+try{
+   //有线程安全问题的代码块
+}finally{
+	lock.unlock();
+}
+```
+
+#### 网络编程
 
 
 
@@ -2778,13 +2884,296 @@ public class JDBCutils {
 
 
 
+### SpringMVC
 
+> 是一个基于MVC设计思想的表现层框架。
 
+#### SpringMVC框架配置
 
+##### 一、前端控制器配置
 
+> 前端控制器是一个servlet，要在web.xml中配置
 
+```xml
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+  <!--配置前端控制器并拦截所有请求-->
+  <servlet>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+       
+      <!--配置加载Spring配置文件-->
+      <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:springmvcConfig.xml</param-value>
+    </init-param>
+    
+      <!--配置在服务器启动时加载servlet-->
+    <load-on-startup>1</load-on-startup>  
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dispatcherServlet</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>  
+</web-app>
+```
 
+##### 二、SpringMVC控制器类配置
 
+```java
+@Controller //使用注解将类加入Spring容器
+@RequestMapping("/param") //设定访问路径
+public class ParamController {
+    
+    @RequestMapping("/saveAccount")
+    public String saveAccount(Account account){
+        System.out.println(account);
+        return "success";
+    }
+}
+```
+
+##### 三、Spring容器配置
+
+> 配置Spring配置文件
+
+```xml
+<!--Spring配置文件 springmvcConfig.xml-->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="info.fangou"/>
+    
+</beans>
+```
+
+##### 四、视图解析器配置
+
+> 配置Spring配置文件
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       ...
+       
+    <context:component-scan base-package="info.fangou"/>
+
+<!--配置视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--配置视图存放的路径-->
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <!--配置后缀名-->
+        <property name="suffix" value=".jsp"/>
+    </bean>
+	<!--开启SpringMVC框架注解支持-->
+	<mvc:annotation-driven/>
+</beans>
+```
+
+#### 请求参数绑定
+
+##### 1. 请求参数绑定实体类型
+
+以Account和User实体类为例
+
+```java
+public class Account implements Serializable {
+    private String username;
+    private String password;
+    private Double money;
+    private User user;
+}
+public class User implements Serializable {
+    private String uname;
+    private Integer age;
+}
+```
+
+控制器方法：
+
+```java
+@RequestMapping("/saveAccount")
+public String saveAccount(Account account){
+     System.out.println(account);
+     return "success";
+}
+```
+
+JSP页面：
+
+页面中`name`属性的值必须与实体类中的属性名相对应。
+
+```jsp
+<form action="param/saveAccount" method="post">
+            姓名：<input type="text" name="username"/><br>
+            密码：<input type="text" name="password"/><br>
+            金额：<input type="text" name="money"/><br>
+            用户姓名：<input type="text" name="user.uname"/><br>
+            用户年龄：<input type="text" name="user.age"/><br>
+            <input type="submit" value="提交"/>
+</form>
+```
+
+##### 2. 解决中文乱码
+
+> 通过配置过滤器的方式设置字符集编码，解决中文乱码
+
+在`web.xml`中设置过滤器，并设置字符集为`utf-8`。
+
+```xml
+<filter>
+    <filter-name>characterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>characterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+```
+
+##### 3.请求参数绑定集合类型
+
+实体类代码
+
+```java
+public class Account implements Serializable {
+
+    private String username;
+    private String password;
+    private Double money;
+   
+    private List<User> list;
+    private Map<String,User> map;
+
+}
+```
+
+JSP页面
+
+```jsp
+<form action="param/saveAccount" method="post">
+            姓名：<input type="text" name="username"/><br>
+            密码：<input type="text" name="password"/><br>
+            金额：<input type="text" name="money"/><br>
+    <!--将umane和age封装到一个User对象中并存到list[0]位置-->
+            用户姓名：<input type="text" name="list[0].uname"/><br>
+            用户年龄：<input type="text" name="list[0].age"/><br>
+	<!--将umane和age封装到一个User对象中并存到map中，key为one-->
+            用户姓名：<input type="text" name="map['one'].uname"/><br>
+            用户年龄：<input type="text" name="map['one'].age"/><br>
+            <input type="submit" value="提交"/>
+</form>
+```
+
+##### 4.自定义数据类型转换
+
+> 主要用于日期格式的转换，以日期为例
+
+1. 编写转换类
+
+   ```java
+   //实现Converter转换接口
+   public class StringToDateConverter implements Converter<String, Date> {
+       @Override
+       public Date convert(String s) {
+           if (s == null) {
+               throw new RuntimeException("空");
+           }
+           DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+           try {
+               return df.parse(s);
+           } catch (ParseException e) {
+               e.printStackTrace();
+           }
+           return null;
+       }
+   ```
+
+2. 在Spring配置文件中配置转换器对象并开启
+
+   ```xml
+   <!--配置自定义转换器对象-->
+   <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+           <property name="converters">
+               <set>
+                   <bean class="info.fangou.utils.StringToDateConverter"/>
+               </set>
+           </property>
+       </bean>
+   
+       <!--开启自定义转换器对象-->
+       <mvc:annotation-driven conversion-service="conversionService"/>
+   ```
+
+##### 5.获取原生Servlet API
+
+> 用于在控制器中获取HttpServletRequest和HttpServletResponse。
+
+```java
+@RequestMapping("/test")
+//直接在参数列表中添加需要获取的对象
+public String servletTest(HttpServletRequest request, HttpServletResponse response){
+    HttpSession httpSession = request.getSession();
+    System.out.println(httpSession);
+    return "success";
+}
+```
+
+#### SpringMVC注解作用
+
+##### 1. RequestMapping
+
+用法：@RequestMapping(path = "/hello")
+
+作用：定义控制器方法的访问路径，当加在方法上时，定义方法的访问路径，当加在类上时，定义类的访问路径。
+
+属性：value：用于指定请求的URL，作用等同于path；
+
+​            method：用于指定请求的方法。
+
+​			例：@RequestMapping(path = "/hello",method = {RequestMethod.GET}) 
+
+​            params：用于指定限制请求参数的条件。他支持简单的表达式，要求请求参数的key和value必须和配置一模一样。
+
+​            headers：用于限制请求消息头的条件。
+
+##### 2. RequestParam
+
+> 用于修饰控制器方法中的变量，将变量名与请求参数名对应。
+
+```java
+@RequestMapping("/testAnno")
+                       //填请求参数名
+public String testAnno(@RequestParam(name = "username") String name){
+     System.out.println(name);
+     return "success";
+}
+```
+
+### SSM框架整合
+
+> 用Spring整合SpringMVC和Mybatis
+
+1. 整合思路
+   1. 先搭建整合环境
+   2. 把Spring搭建配置完成
+   3. 使用Spring整合SpringMVC
+   4. 使用Spring整合Mybatis
+2. 
 
 ### Maven使用简介
 

@@ -891,7 +891,12 @@ try{
 
 #### 网络编程
 
+##### Java中实现网络通信
 
+> Java中提供了两个类用于实现TCP通信
+
+1. 客户端：`java.net.socket`类。实现Socket对象，向服务端发送请求，服务端响应，两者建立连接开始通信。
+2. 服务端：`java.net.serverSocket`类。创建ServerSocket对象，开启一个服务，等待连接。
 
 ## Java EE 
 

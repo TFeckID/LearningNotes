@@ -37,7 +37,11 @@ CTRL+ALT+↑ //向上复制一行
 
 ### 数据类型
 
-
+> `Java`内置数据类型包括基本数据类型和引用数据类型
+>
+> 基本数据类型：byte，short，int，long，float，double，char，boolean
+>
+> 引用数据类型：类类型，接口类型，数组类型，枚举类型
 
 ### 数组
 
@@ -626,8 +630,8 @@ Calendar calendar = Calendar.getInstance();
   void add(int field,int offset); //给对应的字段增加对应的偏移量，自动计算增加后的日期
   void get(int field); //根据日期字段返回对应的日期值
   void set(int ... args); //手动设置日期和时间
-```
-  
+  ```
+
 - `Calendar`类中字段表
 
   |             字段              |                         含义                         |
@@ -695,8 +699,8 @@ enum <枚举类名>{
 
 - 正则表达式的分组功能
 
-  - （）可以将某一个或几个元素合成为一个组，在匹配时当成一个整体看待，\\ \\ n表示第n组又出现一次，比如 (.)\\\\ 1匹配 “哈哈” 这样的词，(.)\\\\1(.)\\\\2 匹配 ”高高兴兴“这样的词，(..)\\\\1 匹配 “高兴高兴”。
-  - \$符号可以取得前面组的内容，通常用于replaceAll 方法中，\$n 代表取得第n组的内容，例 replaceAll("(.)\\\\1+","$1") 
+  - （）可以将某一个或几个元素合成为一个组，在匹配时当成一个整体看待，`\\n`表示第n组又出现一次，比如 `(.)\\1`匹配 “哈哈” 这样的词，(.)\\\\1(.)\\\\2 匹配 ”高高兴兴“这样的词，(..)\\\\1 匹配 “高兴高兴”。
+  - \$符号可以取得前面组的内容，通常用于`replaceAll `方法中，`$n` 代表取得第n组的内容，例` replaceAll("(.)\\1+","$1") `
 
 - Pattern和Matcher的概述
 
@@ -1497,7 +1501,7 @@ try{
       ServletContext sc = getServletContext();
       ```
    3. sc对象的各成员方法
-      
+     
 
       - 使用以下方法可获取到xml文件中的param-value值
       
@@ -1661,7 +1665,7 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
 > 指令的写法：<%@ 指令名 指令参数=...%>
 
 1. Page指令：用于配置JSP页面
-   
+  
    该指令各参数的意义：
    
    - language：表明jsp文件中可以写java代码
@@ -2287,7 +2291,7 @@ public class JDBCutils {
       
          1. fadeIn([speed],[easing],[fn])
       2. fadeOut([speed],[easing],[fn])
-         
+        
          3. fadeToggle([speed],[easing],[fn])
       
    - 遍历方式

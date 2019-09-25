@@ -54,7 +54,11 @@ CTRL+ALT+↑ //向上复制一行
 |  char   | 空字符 |
 | String  |  null  |
 
+### switch...case
 
+> JDK1.7之前只能由int，byte，short，char作为判断条件。
+>
+> JDK1.8之后可以由String作为判断条件，不能由long作为条件。
 
 ### 面向对象概述
 
@@ -125,6 +129,11 @@ CTRL+ALT+↑ //向上复制一行
   - instanceof关键字，用于判断对象是否属于某类，
 
     用法：  <对象名>  instanceof  <类名>
+  
+- 静态多态与动态多态
+
+  - 静态多态：方法重载
+  - 动态多态：方法重写；动态绑定。
 
 ### 抽象类
 
@@ -351,48 +360,122 @@ class Outer {
 ### API概述
 
 - API(Application Programming Interface)
+  
   - 应用程序编程接口
 - Java API
+  
   - Java提供给我们使用的类，这些类将底层的实现封装了起来，我们不需要关心如何实现这些类，只需学习如何使用
+  
+  - 使用Java API
+  
+    > **1**：首先要找到相关类：**1**：通过索引去找 **2**：通过目录去找
+    >
+    > **2**：看清其中文定义
+    >
+    > **3**：查看类->abstract ,interface,final
+    >
+    > **4**：查看其类的特点
+    >
+    > **5**：如果当前类可以被实例化，则查看其构造函数
+    >
+    > **6**：点近相应构造方法查看具体参数表示
+    >
+    > **7**：根据需求查看普通方法
 
 ### Object类的概述
 
 - Object类概念
   - 类层次结构的根类
   - 所有类方法都直接或间接继承自该类
+  
 - 构造方法
-  - public Object()
+  
+  ```java
+  public Object();
+  ```
+  
 - 成员方法
-  - hashCode()方法，返回对象的哈希码值
-  - getClass()方法，返回此对象的运行时类(取得字节码文件)
+  
+  ```java
+  int hashcode(); //返回hash值
+  Class<T> getClass(); //返回运行时类
+  boolean equals(Object obj); //比较两个对象是否一致
+  String toString(); //返回对象的字符串形式，重写该方法以实现自定义输出对象的属性
+  ```
+  
+
+> **Native** **：**java native interface: **本地应用接口** **调用本地由其他语言书写方法**
+
+### 对象克隆
+
+> 创建出一个与当前对象属性及方法完全一致的对象副本
+
+```java
+protected native Object clone(); //方法声明 
+```
+
+#### 实现方式
+
+1. 实现`Cloneable`接口
+2. 重写`clone()`方法
+
+#### 浅克隆和深克隆
+
+- 浅克隆：只复制基本数据类型，引用数据类型的引用不变。
+- 深克隆：对象内的基本数据和引用数据都被拷贝一份。
+- 深克隆实现流程：
+  1. 先实现对象的浅克隆；
+  2. 在克隆方法内对对象内的引用对象进行克隆。
+
+
 
 ### String类的概述
+
+> 字符串类，其被final所修饰，不能被继承。
+
+> 字符串不能被改变，当创建一个字符串时，会先到常量区找有无相同的字符串，若没有则在常量区中新建一个。若以实例化方式新建字符串，其会在堆内和常量区创建对象。空串""也会被分配内存。
 
 - String类的获取功能
 
   ```java
-  int length() //获取字符串长度
-  char charAt(int index) //获取对应位置的字符
-  int length() //获取字符串的长度
-  char charAt(int index) //获取索引对应位置的字符
-  int indexOf(int ch) /*返回指定字符在字符串中第一次出现处的索引，若字符不存在，返回 -1。*/
-  int indexOf(String str) /*获取指定字符串中第一个字符在该字符串中第一次出现处的索引，若不存在，返回 -1。*/
-  int indexOf(String str,int fromIndex) /*获取指定字符串在对应索引之后第一次出现的位置的索引*/
-  int indexOf(char ch，int fromIndex) /*获取指定字符在指定索引后第一次出现处的索引*/
-  int lastIndexOf(char ch) /*从字符串最后向前查找指定字符第一次出现的位置*/
-  String substring(int start)  /*从指定位置开始截取字符串，默认到行尾*/
-  String substring(int start，int end)  /*从指定位置开始到指定位置前结束截取字符串 （包含头，不包含尾）*/
+  int length(); //获取字符串长度
+  char charAt(int index); //获取对应位置的字符
+  boolean isEmpty();//字符串长度为0时返回true
+  char charAt(int index); //获取索引对应位置的字符
+  int indexOf(char ch); /*返回指定字符在字符串中第一次出现处的索引，若字符不存在，返回 -1。*/
+  int indexOf(String str);/*获取指定字符串中第一个字符在该字符串中第一次出现处的索引，若不存在，返回 -1。*/
+  int indexOf(String str,int fromIndex); /*获取指定字符串在对应索引之后第一次出现的位置的索引*/
+  int indexOf(char ch，int fromIndex); /*获取指定字符在指定索引后第一次出现处的索引*/
+  int lastIndexOf(char ch); /*从字符串最后向前查找指定字符第一次出现的位置*/
+  String substring(int start);  /*从指定位置开始截取字符串，默认到行尾*/
+  String substring(int start，int end);  /*从指定位置开始到指定位置前结束截取字符串 （包含头，不包含尾）*/
+  boolean endsWith(String str); //判断是否以指定字符串结尾
+  boolean startsWith(String str); //判断是否以指定字符串开头
   ```
 
 - String类的转换功能
 
   ```java
-byte[] getBytes() //把字符串转换成字节数组
-char[] toCharArray() //把字符串转换为字符数组
-static String valueOf(Object) //把任意类型数据转换为字符串
-String toLowerCase() //把字符串转换成小写
-String toUpperCase() //把字符串转换成大写
-String concat(String str) //拼接字符串
+  byte[] getBytes(); //把字符串转换成字节数组
+  char[] toCharArray(); //把字符串转换为字符数组
+  static String valueOf(Object); //把任意类型数据转换为字符串
+  String toLowerCase(); //把字符串转换成小写
+  String toUpperCase(); //把字符串转换成大写
+  String concat(String str); //拼接字符串
+  String trim();//去除首尾空格
+  ```
+
+- 各种不同的声明方式所在内存位置
+
+  ```java
+  String string = "Hello"; //常量区
+  String str2 = "Hello"; //常量区
+  String str4 = "He" + "llo"; //常量区
+  String s5 = "He"; //常量区
+  String s6 = "llo"; //常量区
+  String str3 = new String("Hello"); //堆
+  String s7 = s5 + s6; //堆
+  String s8 = s5 + "llo"; //堆
   ```
 
 ### StringBuffer类
@@ -409,25 +492,27 @@ String concat(String str) //拼接字符串
 - StringBuffer的构造函数
 
   ```java
-  public StringBuffer()  //无参构造，默认创建16字符容量
-  public StringBuffer(int capacity)  //指定容量的StringBuffer对象
-  public StringBuffer(String str)  //指定字符串的StringBuffer对象
+  public StringBuffer();  //无参构造，默认创建16字符容量
+  public StringBuffer(int capacity);  //指定容量的StringBuffer对象
+  public StringBuffer(String str);  //指定字符串的StringBuffer对象
   ```
+
 
 - StringBuffer的方法
 
   ```java
-  public int capacity() //返回缓冲区的容量
-  public int length() //返回长度(字符数)
-  public StringBuffer append(String str) //将任意字符串添加进缓冲区并返回StringBuffer本身
-  public StringBuffer insert(int offset, String str) //在指定位置将任意类型的数据插入缓冲区并返回其本身
-  public StringBuffer deleteCharAt(int index) //删除索引指向的字符
-  public StringBuffer delete(int start,int end) //删除两个索引之间的内容,包含头不包含尾
-  public StringBuffer replace(int start,int end,String str) //将索引区间的内容用str替换,包含头不包含尾
-  public StringBuffer reverse() //字符串反转
-  public String substring(int index) //从索引位置截取字符串至末尾
-  public String substring(int start,int end) //从索引开始截取到索引结束，包括头不包括尾
+  int capacity(); //返回缓冲区的容量
+  int length(); //返回长度(字符数)
+  StringBuffer append(String str); //将任意字符串添加进缓冲区并返回StringBuffer本身
+  StringBuffer insert(int offset, String str); //在指定位置将任意类型的数据插入缓冲区并返回其本身
+  StringBuffer deleteCharAt(int index); //删除索引指向的字符
+  StringBuffer delete(int start,int end); //删除两个索引之间的内容,包含头不包含尾
+  StringBuffer replace(int start,int end,String str); //将索引区间的内容用str替换,包含头不包含尾
+  StringBuffer reverse(); //字符串反转
+  String substring(int index); //从索引位置截取字符串至末尾
+  String substring(int start,int end); //从索引开始截取到索引结束，包括头不包括尾
   ```
+
 
 ### StringBuilder类
 
@@ -444,17 +529,19 @@ String concat(String str) //拼接字符串
 - 成员方法：
 
   ```java
-  public static String toString(int[] arr) //数组转字符串
-  public static void sort(int[] arr) //数组排序
-  public static int binarySearch(int[] arr, int key) //查找元素
-  public static List<T> asList(T ... a) //返回由数组元素生成的集合
+  public static String toString(T[] arr); //数组转字符串
+  public static void sort(T[] arr); //数组排序,只能升序排列
+  public static int binarySearch(int[] arr, int key); //查找元素
+  public static List<T> asList(T ... a); //返回由数组元素生成的集合
+  public static void fill(T[] arr, T t); //使用指定的值填充整个数组
   ```
+
 
 ### 基本数据类型包装类
 
 - 概述：将基本数据类型包装成对象以便于在其中定义更多的功能方法以更好地使用该数据
 
-- 基本数据类型有八种，其中七种有parse方法可以将其字符串表现形式解析为基本数据类型，Character没有该方法，原因是char无法存储多个字符
+- 基本数据类型包装类有八种，其中七种有`parse`方法可以将其字符串表现形式解析为基本数据类型，`Character`没有该方法，原因是`char`无法存储多个字符
 
 - 基本数据类型与包装类对应关系
 
@@ -472,16 +559,113 @@ String concat(String str) //拼接字符串
 - Integer常用方法
 
   ```java
-  public int intValue() //以int形式返回该Integer对象的值
-  public static int parseInt(String s) //将字符串解析成有符号十进制整数
+  int intValue(); //以int形式返回该Integer对象的值
+  static int parseInt(String s); //将字符串解析成有符号十进制整数
+  static String toString(int i,int radix); //以指定进制(radix)输出对应整数的字符串表示
+  static Integer valueOf(String s, int radix); //将指定进制(radix)整数的字符串表示转换成Integer对象
+  static int max(int a,int b); //返回两数最大值
+  static int min(int a,int b); //返回两数最小值
+  static int compare(int a,int b); //比较a,b；若大于，返回1，等于返回0，小于返回-1
   ```
 
 - JDK1.5新特性
 
   - 自动装箱与拆箱：将基本数据类型自动包装成包装类，或将包装类自动拆箱成基本数据类型
+  
   - 如果数据的范围在byte的取值范围(-128,127之间)，自动装箱不会新创建对象，而是从常量池中获取，超过byte取值范围则会在堆中新创建对象
+  
+  - 缓存值
+  
+    | 数据类型  |   缓存值    |
+    | :-------: | :---------: |
+    |  Boolean  | true, false |
+    |   Byte    |  -128~127   |
+    |   Short   |  -128~127   |
+    |  Integer  |  -128~127   |
+    |   Long    |  -128~127   |
+    | Character |    0~127    |
+    |   Float   |  无缓存值   |
+    |  Double   |  无缓存值   |
+  
+    
+
+### 时间和日期类
+
+#### Data 类概述与使用
+
+> Data类是Java.util提供的封装当前日期和时间的类
+
+------
+
+- `Date`的构造方法
+
+  ```java
+  Date(); //创建当前时间的Date类对象
+  Date(long date); //参数为1970年1月1日以来的毫秒数，即时间戳
+  ```
+
+- 
+
+#### SimpleDateFormat的概述与使用
+
+> 格式化时间和日期类
+
+#### Calendar类的概述与使用
+
+> Calendar：日历类，用于完成日期和时间的操作。是一个抽象类，单例模式，可以获取唯一的一个系统时间。
+
+- 获取`Calendar`实例
+
+  ```java
+Calendar calendar = Calendar.getInstance();
+  ```
+
+- 常用方法
+
+  ```java
+  void add(int field,int offset); //给对应的字段增加对应的偏移量，自动计算增加后的日期
+  void get(int field); //根据日期字段返回对应的日期值
+  void set(int ... args); //手动设置日期和时间
+```
+  
+- `Calendar`类中字段表
+
+  |             字段              |                         含义                         |
+  | :---------------------------: | :--------------------------------------------------: |
+  |         Calendar.YEAR         |                      日期中的年                      |
+  |        Calendar.MONTH         |                 日期中的月，需要加1                  |
+  |         Calendar.DATE         |                      日期中的日                      |
+  |         alendar.HOUR          |                日期中的小时(12小时制)                |
+  |     Calendar.HOUR_OF_DAY      |                日期中的小时(24小时制)                |
+  |        Calendar.MINUTE        |                     日期中的分钟                     |
+  |        Calendar.SECOND        |                      日期中的秒                      |
+  |     Calendar.WEEK_OF_YEAR     |                    当前年中星期数                    |
+  |    Calendar.WEEK_OF_MONTH     |                    当前月中星期数                    |
+  |     Calendar.DAY_OF_YEAR      |                   当前年中的第几天                   |
+  |     Calendar.DAY_OF_MONTH     |                   当前月中的第几天                   |
+  |     Calendar.DAY_OF_WEEK      | 当前星期的第几天(星期天表示第一天，星期六表示第七天) |
+  | Calendar.DAY_OF_WEEK_IN_MONTH |                 当前月中的第几个星期                 |
+  |                               |                                                      |
+
+- 
+
+### 枚举
+
+> 定义枚举类是通过关键字`enum`实现的，我们只需依次列出枚举的常量名。
+
+定义语法：
+
+```java
+enum <枚举类名>{
+    枚举成员1, 枚举成员2...
+}
+```
+
+
 
 ### 正则表达式
+
+> 正则表达式以`^`开头，以`$`结束的一个字符串。
 
 - 正则表达式符号
 
@@ -501,13 +685,12 @@ String concat(String str) //拼接字符串
   |  X{n}   |       X恰好出现n次        |      [abc]{5}   abc中的任何字符总共恰好出现5次       |
   | X{n，}  |       X至少出现n次        |       [abc]{5，}   abc中的任意字符至少出现5次        |
   | X{n，m} | X至少出现n次，但不超过m次 | [abc]{5,8}   abc中的任意字符整数出现5次，但不超过8次 |
-  |         |                           |                                                      |
-
+  
 - 正则表达式中的方法
 
   ```java
-  public String[] split(String reg) //根据给定的正则表达式切割字符串
-  public static replaceAll(String reg,String replacement) //根据正则表达式替换字符串中的元素
+  String[] split(String reg); //根据给定的正则表达式切割字符串
+  static replaceAll(String reg,String replacement); //根据正则表达式替换字符串中的元素
   ```
 
 - 正则表达式的分组功能
@@ -543,35 +726,35 @@ String concat(String str) //拼接字符串
 
 ### 常用工具类
 
-- Math类的概述和方法使用
+#### Math类的概述和方法使用
 
-  - 概述：用于基本数学运算的工具类
+- 概述：用于基本数学运算的工具类
 
-  - 成员方法
+- 成员方法
 
-    ```java
-    public static int abs(int a) //返回绝对值
-    public static double ceil(double a) //对小数向上取整
-    public static double floor(double a) //对小数向下取整
-    public static int max(int a,int b)  //返回两数中的最大值
-    public static double pow(double a,double b) //返回a的b次方
-    public static double random() //生成一个随机数
-    public static int round(float a) //四舍五入
-    public static double sqrt(double a) //返回a的开平方
-    ```
+  ```java
+  static int abs(int a); //返回绝对值
+  static double ceil(double a); //对小数向上取整
+  static double floor(double a); //对小数向下取整
+  static int max(int a,int b);  //返回两数中的最大值
+  static double pow(double a,double b); //返回a的b次方
+  static double random(); //生成一个随机数
+  static int round(float a); //四舍五入
+  static double sqrt(double a); //返回a的开平方
+  ```
 
-- System类的概述
+#### System类的概述
 
-  - 成员：
+- 成员：
 
-    ```java
-    System.in //标准键盘输入流
-    System.out //标准输出流
-    
-    public static void gc() //运行垃圾回收器
-    public static void arraycopy(Object src,int srcPos,Object dest,int destPos,int length)
-    /*数组拷贝*/
-    ```
+  ```java
+  System.in //标准键盘输入流
+  System.out //标准输出流
+  
+  static void gc(); //运行垃圾回收器
+  static void arraycopy(Object src,int srcPos,Object dest,int destPos,int length);
+  /*数组拷贝*/
+  ```
 
 ### Collection集合
 
@@ -594,7 +777,7 @@ String concat(String str) //拼接字符串
       - LinkList
         - 底层由链表实现
       - Vector
-        - 同ArrayList，但时间较早
+        - 同ArrayList，但时间较早，是线程安全的。
     - Set(子接口，无序，存取顺序不一致，无索引，不可存储重复数据)
       - HashSet
 
@@ -797,30 +980,6 @@ public static <T> T max(collection<?> coll) //获取集合元素的最大值
 public static void reverse(List<?> list)  //反转集合顺序
 public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
 ```
-
-### Data 类概述与使用
-
-> Data类是Java.util提供的封装当前日期和时间的类
-
----
-
-
-
-### 枚举
-
-> 定义枚举类是通过关键字`enum`实现的，我们只需依次列出枚举的常量名。
-
-定义语法：
-
-```java
-enum <枚举类名>{
-    枚举成语1, 枚举成员2...
-}
-```
-
-
-
-
 
 
 

@@ -633,8 +633,7 @@ Calendar calendar = Calendar.getInstance();
   void get(int field); //根据日期字段返回对应的日期值
   void set(int ... args); //手动设置日期和时间
   ```
-```
-  
+
 - `Calendar`类中字段表
 
   |             字段              |                         含义                         |
@@ -662,13 +661,11 @@ Calendar calendar = Calendar.getInstance();
 
 定义语法：
 
-​```java
+```java
 enum <枚举类名>{
     枚举成员1, 枚举成员2...
 }
 ```
-
-
 
 ### 正则表达式
 
@@ -1594,7 +1591,7 @@ try{
       ServletContext sc = getServletContext();
       ```
    3. sc对象的各成员方法
-      
+     
 
       - 使用以下方法可获取到xml文件中的param-value值
       
@@ -1758,7 +1755,7 @@ String getRealPath("<指定文件的相对路径>") //以指定文件的相对�
 > 指令的写法：<%@ 指令名 指令参数=...%>
 
 1. Page指令：用于配置JSP页面
-   
+  
    该指令各参数的意义：
    
    - language：表明jsp文件中可以写java代码
@@ -2384,7 +2381,7 @@ public class JDBCutils {
       
          1. fadeIn([speed],[easing],[fn])
       2. fadeOut([speed],[easing],[fn])
-         
+        
          3. fadeToggle([speed],[easing],[fn])
       
    - 遍历方式
@@ -3521,7 +3518,7 @@ public String testAnno(@RequestParam(name = "username") String name){
 
 3. Maven仓库的种类
 
-   
+  > 本地仓库，远程仓库
 
 4. Maven命令
 
@@ -3538,6 +3535,10 @@ public String testAnno(@RequestParam(name = "username") String name){
 
    <scope>标签可以设定依赖的作用范围，其取值为`provided`：只在编译时作用；`test`：只在测试时作用
 
-6. 
+### JPA
 
-    
+
+
+### SpringBoot
+
+> 

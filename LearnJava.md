@@ -102,6 +102,10 @@ CTRL+ALT+↑ //向上复制一行
     + 优先于主方法执行
     + 加载顺序：静态代码块>构造代码块(>构造方法)>局部代码块
 
+### JVM加载类的过程
+
+![](https://fangou-archive-stander.oss-cn-chengdu.aliyuncs.com/markdown-image/JavaNote/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B.jpg?Expires=1569466683&OSSAccessKeyId=TMP.hVxv55fD5hMGpAxPD9f3pdLxaUNPdtRsiqFBRs2BSGrrd62FSrbj29gTdfAeFz7ut28FvuSrk3L8PoPyY3qoVeofckATFWkcM8o3GFtQ4gmZ7Ac4ySEn2iAkgBJDwv.tmp&Signature=xbNfYuo6jDTMKo9JdLqzCFToN%2F0%3D)
+
 ### 类的继承
 
 - 继承(extends)
@@ -401,6 +405,7 @@ class Outer {
   Class<T> getClass(); //返回运行时类
   boolean equals(Object obj); //比较两个对象是否一致
   String toString(); //返回对象的字符串形式，重写该方法以实现自定义输出对象的属性
+  void finalize(); //垃圾回收时调用此方法
   ```
   
 
@@ -451,6 +456,7 @@ protected native Object clone(); //方法声明
   String substring(int start，int end);  /*从指定位置开始到指定位置前结束截取字符串 （包含头，不包含尾）*/
   boolean endsWith(String str); //判断是否以指定字符串结尾
   boolean startsWith(String str); //判断是否以指定字符串开头
+  String replace(String olderChar,String newChar); //字符串替换
   ```
 
 - String类的转换功能
@@ -529,11 +535,11 @@ protected native Object clone(); //方法声明
 - 成员方法：
 
   ```java
-  public static String toString(T[] arr); //数组转字符串
-  public static void sort(T[] arr); //数组排序,只能升序排列
-  public static int binarySearch(int[] arr, int key); //查找元素
-  public static List<T> asList(T ... a); //返回由数组元素生成的集合
-  public static void fill(T[] arr, T t); //使用指定的值填充整个数组
+  static String toString(T[] arr); //数组转字符串
+  static void sort(T[] arr); //数组排序,只能升序排列
+  static int binarySearch(int[] arr, int key); //查找元素
+  static List<T> asList(T ... a); //返回由数组元素生成的集合
+  static void fill(T[] arr, T t); //使用指定的值填充整个数组
   ```
 
 
@@ -626,6 +632,7 @@ Calendar calendar = Calendar.getInstance();
   void add(int field,int offset); //给对应的字段增加对应的偏移量，自动计算增加后的日期
   void get(int field); //根据日期字段返回对应的日期值
   void set(int ... args); //手动设置日期和时间
+  ```
 ```
   
 - `Calendar`类中字段表
@@ -655,7 +662,7 @@ Calendar calendar = Calendar.getInstance();
 
 定义语法：
 
-```java
+​```java
 enum <枚举类名>{
     枚举成员1, 枚举成员2...
 }
@@ -672,6 +679,7 @@ enum <枚举类名>{
   |  符号   |           作用            |                         用例                         |
   | :-----: | :-----------------------: | :--------------------------------------------------: |
   |   []    |       代表单个字符        |                   [abc]     a,b或c                   |
+  |   {}    |     用于限定匹配次数      |                                                      |
   |    .    |       任意一个字符        |                  .    任何一个字符                   |
   |   \d    |           数字            |            [\d]     0到9中的任何一个数字             |
   |   \D    |          非数字           |              [\D]   任何一个非数字字符               |
@@ -679,12 +687,13 @@ enum <枚举类名>{
   |   \S    |        非空白字符         |                                                      |
   |   \w    |         单词字符          |             [0-9,a-z,A-Z,_ ]属于单词字符             |
   |   \W    |        非单词字符         |                                                      |
+  |    ^    |   在中括号内意思为取反    |                    [^0]表示不为0                     |
   |   X?    |      X出现一次或零次      |        [abc]？  abc中的任何字母出现一次或零次        |
   |   X*    |      X出现零次或多次      |        [abc]*  abc中的任何字母出现零次或多次         |
   |   X+    |      X出现一次或多次      |        [abc]+  abc中的任何字母出现一次或多次         |
   |  X{n}   |       X恰好出现n次        |      [abc]{5}   abc中的任何字符总共恰好出现5次       |
   | X{n，}  |       X至少出现n次        |       [abc]{5，}   abc中的任意字符至少出现5次        |
-  | X{n，m} | X至少出现n次，但不超过m次 | [abc]{5,8}   abc中的任意字符整数出现5次，但不超过8次 |
+  | X{n，m} | X至少出现n次，但不超过m次 | [abc]{5,8}   abc中的任意字符至少出现5次，但不超过8次 |
   
 - 正则表达式中的方法
 
@@ -700,20 +709,22 @@ enum <枚举类名>{
 
 - Pattern和Matcher的概述
 
-  - 典型调用顺序：
+  > Pattern是正则表达式的编译表示
 
+  - 典型调用顺序：
+  
     ```java
-    Pattern p = Pattern.compile("a*b");  //获取正则表达式
-    Matcher m = p.matcher("abbbbb");  //获取匹配器
-    boolean b = m.matches();  //看是否匹配
+    Pattern p = Pattern.compile(String reg);  //获取正则表达式
+    Matcher m = p.matcher(String str);  //获取匹配器
+  boolean b = m.matches();  //看是否匹配
     ```
 
   - 获取功能：
-
+  
     ```java
     /*获取电话号码实例*/
-    Pattern p = Pattern.compile(regex);  //获取电话号码正则表达式
-    Matcher m = p.matcher(s);     //匹配源字符串
+    Pattern p = Pattern.compile(String regex);  //获取电话号码正则表达式
+    Matcher m = p.matcher(String s);     //匹配源字符串
     while(m.find())
       System.out.print(m.group());
     /*
@@ -724,11 +735,11 @@ enum <枚举类名>{
     */
     ```
 
-### 常用工具类
+### 常用工具类和系统类
 
 #### Math类的概述和方法使用
 
-- 概述：用于基本数学运算的工具类
+>  用于基本数学运算的工具类
 
 - 成员方法
 
@@ -738,12 +749,30 @@ enum <枚举类名>{
   static double floor(double a); //对小数向下取整
   static int max(int a,int b);  //返回两数中的最大值
   static double pow(double a,double b); //返回a的b次方
-  static double random(); //生成一个随机数
+  static double random(); //生成一个0到1之间随机数，不包括1
   static int round(float a); //四舍五入
   static double sqrt(double a); //返回a的开平方
+  static double cbrt(int a); //返回a的立方根
+  static double exp(int a); //返回e的a次方
   ```
 
-#### System类的概述
+#### Random类的概述和方法使用
+
+> 该类实例用于生成伪随机数
+
+- 方法
+
+  ```java
+  int nextInt(); //生成一个int范围内的随机数
+  int nextInt(int i); //生成一个大于等于0，小于i的随机整数
+  double nextDouble(); //生成一个0到1之间的随机浮点数
+  ```
+
+#### System类的概述和方法使用
+
+> 标准输入，标准输出和错误输出流; 访问外部定义的属性和环境变量; 一种加载文件和库的方法;  以及用于快速复制阵列的一部分的实用方法。
+
+> 不能被实例化，提供了类属性和方法
 
 - 成员：
 
@@ -756,7 +785,67 @@ enum <枚举类名>{
   /*数组拷贝*/
   ```
 
-### Collection集合
+- 方法
+
+  ```java
+  static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length); //将原数组从指定索引处复制指定的长度到目标数组指定的索引处
+  static long currentTimeMillis();//获取当前时间戳
+  static void gc(); //调用垃圾回收器
+  ```
+
+#### Runtime类的概述和方法使用
+
+> 每个Java应用程序都有一个`Runtime`类的`Runtime`  ，允许应用程序与运行应用程序的环境进行交互。当前运行时可以从`getRuntime`方法获得。
+>
+> 应用程序无法创建自己的此类的实例。
+>
+> 使用单例模式获取当前运行环境。
+
+- 获取实例
+
+  ```java
+  Runtime r = Runtime.getRuntime();
+  ```
+
+  
+
+- 方法
+
+  ```java
+  static Runtime getRuntime();//获取Runtime对象
+  Process exec(String command); //执行dos命令，返回执行命令打开的进程对象
+  long freeMemory();//返回JVM中空闲的内存，单位字节。
+  long maxMemory();//返回JVM中最大内存空间，单位字节。
+  ```
+
+- 
+
+#### Bigdecimal的概述和方法使用
+
+> 科学计算类，
+
+- 构造方法
+
+  ```java
+  BigDecimal(String val); //将BigDecimal的字符串表示 BigDecimal转换为 BigDecimal 。 
+  ```
+
+- 成员方法
+
+  ```java
+  BigDecimal add(BigDecimal augend); //加法
+  BigDecimal subtract(BigDecimal subtrahend); //减法
+  BigDecimal multiply(BigDecimal multiplicand); //乘法
+  BigDecimal divide(BigDecimal divisor); //除法,只能算能整除的值
+  BigDecimal remainder(BigDecimal divisor); //取余
+  
+  ```
+
+- 
+
+
+
+### Collection集合接口
 
 - 集合的概述：
 
@@ -774,7 +863,7 @@ enum <枚举类名>{
     - List(子接口，有序，存取顺序一致，有索引，可以存储重复数据)
       - ArrayList
         - 底层由数组实现
-      - LinkList
+      - LinkedList
         - 底层由链表实现
       - Vector
         - 同ArrayList，但时间较早，是线程安全的。
@@ -788,14 +877,18 @@ enum <枚举类名>{
         ```
 
         - HashSet的存取顺序是不一致的，存入顺序和取出顺序不一定相同
-        - 存入时先调用对象的hashCode()方法，计算并比较Hashcode，若相同，再调用equls()方法比较对象的属性，若相同，则属于同一对象；在存储自定义对象时，应重写这两个方法
+        - 存入时先调用对象的`hashCode()`方法，计算并比较Hashcode，若相同，再调用`equls()`方法比较对象的属性，若相同，则属于同一对象；在存储自定义对象时，应重写这两个方法
 
+      - LinkedHashSet
+
+        > 由链表维护的HashSet，与前者的区别是LinkedHashSet的存取是有序的，其余属性相同。
+      
       - TreeSet
-
+      
         - 由二叉树实现，可以对元素进行排序
-        - TreeSet不能直接存储自定义对象，若要存储自定义对象，对象所属类必须实现Comparable<T>接口，并重写compareTo()方法，以确保该类可比较。当此对象小于，等于或大于指定的比较对象时，compareTo方法返回一个负整数、零、正整数。
+        - TreeSet不能直接存储自定义对象，若要存储自定义对象，对象所属类必须实现`Comparable<T>`接口，并重写`compareTo()`方法，以确保该类可比较。当此对象小于，等于或大于指定的比较对象时，`compareTo`方法返回一个负整数、零、正整数。
 
-- 集合的方法
+- Collection集合的方法
 
   ```java
   boolean add(E e) //将任意对象存进collection
@@ -806,8 +899,8 @@ enum <枚举类名>{
   int size()  //返回集合长度，即集合内元素个数
   Object[] toArray(T []) //返回包含集合所有元素的数组
   boolean addAll(Collection c) //将集合c中的所有元素添加进当前集合
-  boolean removeAll(Collection c) //
-  boolean containsAll(Collection c) //
+  boolean removeAll(Collection c) //删除当前集合中包含的指定集合的所有元素
+  boolean containsAll(Collection c) //若当前集合包含指定集合中的全部元素则返回true
   boolean retainAll(Collection c) //取集合c与当前集合的交集，若调用的集合改变，返回true，若不                                   变，返回false；即当前集合为c的同集或子集时返回false
   ```
 
@@ -829,9 +922,9 @@ enum <枚举类名>{
   ListIterator listIterator() //返回一个ListIterator
   ```
 
-  - 并发修改：使用迭代器遍历的同时集合在增减元素，称为并发修改,并发修改在普通的迭代器中是不被允许的，因为在开始生成迭代器时就已告知迭代器元素的总数，开始迭代后元素总数不可变。此时，可用ListIterator，此为List专有的迭代器，可以实现迭代的同时增减元素
+  - 并发修改：使用迭代器遍历的同时集合在增减元素，称为并发修改,并发修改在普通的迭代器中是不被允许的，因为在开始生成迭代器时就已告知迭代器元素的总数，开始迭代后元素总数不可变。此时，可用`ListIterator`，此为List专有的迭代器，可以实现迭代的同时增减元素
 
-  - LinkList特有的方法
+  - LinkedList特有的方法
 
     ```java
     void addFirst(E e) //从开头插入元素
@@ -843,6 +936,47 @@ enum <枚举类名>{
     ```
 
 - Set
+### Collections工具类的方法
+
+```java
+static <T> void sort(List<T> list);  /*对传入的List进行排序，要求传入的List中所存的对象
+    										的类已实现Comparable接口，即对象具备可比较性*/
+static <T> int binarySearch(List<T> list,T key); /*以二分查找的算法查找List中对应元素														并返回其索引，若不存在该元素，则返回														其可以插入的点的负索引-1(-插入点-1)*/
+static <T> T max(collection<?> coll); //获取集合元素的最大值
+static void reverse(List<?> list);  //反转集合顺序
+static void shuffle(List<?> list);  //随机打乱集合中元素顺序
+```
+
+----
+
+### Map的概述及用法
+
+- 一个可变长度的键值对的双列集合
+- HashMap：以哈希算法实现的Map
+- TreeMap：以二叉树实现的Map，和TreeSet一样可以自动排序
+- LinkedHashMap：按插入顺序排序的HashMap，存取的顺序一致。
+- Map接口的方法
+
+```java
+V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并返回原来的值
+V get(Object key) //根据提供的键来返回值，若键不存在，则返回null
+void clear()  //移除所有的元素，清空集合
+V remove(Object key)  //根据键移除键值对元素，并返回被移除的值
+boolean containsKey(Object key)  //判断对应的键是否在集合中存在
+boolean containsValue(Object value) //判断对应的值是否在集合中存在
+boolean isEmpty()  //判断集合是否为空
+Set<K> KetSet()  //获取Map中所有键的Set集合
+Collection<V> values() //获取Map中所有值得Collection集合
+Set<Map.Entry<K,V>> entrySet() //将Map中的键值对作为一个对象，获取Map的键值对Set
+int size()  //返回Map的长度，即键值对个数
+```
+
+- HashMap和Hashtable的区别
+  - HashMap是线程不安全的，效率高，出现在JDK1.2版本；Hashtable是线程安全的，效率低，出现在JDK1.0
+  - HashMap中的键值可以为null；Hashtable不可以
+
+
+
 ### 泛型的概述和使用
 
 - 集合泛型
@@ -855,7 +989,7 @@ enum <枚举类名>{
 
   泛型的优点：1、提高安全性，将运行期错误转到编译期
 
-​			 2、省去强转麻烦
+​						 2、省去强转麻烦
 
   - 泛型类的概述和定义
 
@@ -943,43 +1077,6 @@ object.getClass() //返回一个此对象所属类的Class对象
   - 
 
 - 
-
-### Map的概述及用法
-
-- 一个可变长度的键值对的双列集合
-- HashMap：以哈希算法实现的Map
-- TreeMap：以二叉树实现的Map，和TreeSet一样可以自动排序
-- LinkedHashMap：按插入顺序排序的HashMap
-- Map接口的方法
-
-```java
-V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并返回原来的值
-V get(Object key) //根据提供的键来返回值，若键不存在，则返回null
-void clear()  //移除所有的元素，清空集合
-V remove(Object key)  //根据键移除键值对元素，并返回被移除的值
-boolean containsKey(Object key)  //判断对应的键是否在集合中存在
-boolean containsValue(Object value) //判断对应的值是否在集合中存在
-boolean isEmpty()  //判断集合是否为空
-Set<K> KetSet()  //获取Map中所有键的Set集合
-Collection<V> values() //获取Map中所有值得Collection集合
-Set<Map.Entry<K,V>> entrySet() //将Map中的键值对作为一个对象，获取Map的键值对Set
-int size()  //返回Map的长度，即键值对个数
-```
-
-- HashMap和Hashtable的区别
-  - HashMap是线程不安全的，效率高，出现在JDK1.2版本；Hashtable是线程安全的，效率低，出现在JDK1.0
-  - HashMap中的键值可以为null；Hashtable不可以
-
-### Collections工具类的方法
-
-```java
-public static <T> void sort(List<T> list)  /*对传入的List进行排序，要求传入的List中所存的对象
-    										的类已实现Comparable接口，即对象具备可比较性*/
-public static <T> int binarySearch(List<T> list,T key) /*以二分查找的算法查找List中对应元素														并返回其索引，若不存在该元素，则返回														其可以插入的点的负索引-1(-插入点-1)*/
-public static <T> T max(collection<?> coll) //获取集合元素的最大值
-public static void reverse(List<?> list)  //反转集合顺序
-public static void shuffle(List<?> list)  //随机打乱集合中元素顺序
-```
 
 
 

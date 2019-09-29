@@ -867,7 +867,7 @@ enum <枚举类名>{
     - Set(子接口，无序，存取顺序不一致，无索引，不可存储重复数据)
       - HashSet
 
-        - 由哈希算法实现
+        - 由哈希算法实现，其底层由`HashMap`实现
 
         ```java
         HashSet<E> hs = new HashSet();  
@@ -888,48 +888,62 @@ enum <枚举类名>{
 - Collection集合的方法
 
   ```java
-  boolean add(E e) //将任意对象存进collection
-  boolean remove(Object o) //删除指定元素
-  void clear() //清空整个集合
-  boolean contains(Object o) //如果包含指定元素，返回true
-  boolean isEmpty()  //判断是否为空
-  int size()  //返回集合长度，即集合内元素个数
-  Object[] toArray(T []) //返回包含集合所有元素的数组
-  boolean addAll(Collection c) //将集合c中的所有元素添加进当前集合
-  boolean removeAll(Collection c) //删除当前集合中包含的指定集合的所有元素
-  boolean containsAll(Collection c) //若当前集合包含指定集合中的全部元素则返回true
-  boolean retainAll(Collection c) //取集合c与当前集合的交集，若调用的集合改变，返回true，若不                                   变，返回false；即当前集合为c的同集或子集时返回false
+  boolean add(E e); //将任意对象存进collection
+  boolean remove(Object o); //删除指定元素
+  void clear(); //清空整个集合
+  boolean contains(Object o); //如果包含指定元素，返回true
+  boolean isEmpty();  //判断是否为空
+  int size();  //返回集合长度，即集合内元素个数
+  Object[] toArray(T []); //返回包含集合所有元素的数组
+  boolean addAll(Collection c); //将集合c中的所有元素添加进当前集合
+  boolean removeAll(Collection c); //删除当前集合中包含的指定集合的所有元素
+  boolean containsAll(Collection c); //若当前集合包含指定集合中的全部元素则返回true
+  boolean retainAll(Collection c); //取集合c与当前集合的交集，若调用的集合改变，返回true，若不                                   变，返回false；即当前集合为c的同集或子集时返回false
   ```
 
 - 迭代器的使用（集合遍历）
 
   ```java
-  Iterator iterator() //返回一个当前集合的迭代器
-  Boolean hasNext() //是否有下一个元素
-  Object next() //返回下一个元素
+  Iterator iterator(); //返回一个当前集合的迭代器
+  Boolean hasNext(); //是否有下一个元素
+  Object next(); //返回下一个元素
   ```
 
 - List的特有方法
 
   ```java
-  void add(int index,E element) //在指定的索引处添加一个元素，其后元素依次向后移一个单位;当使用									不存在的索引时，将出现索引越界异常;index小于等于size
-  E remove(int index) //删除索引对应处的元素,并返回被删除的元素
-  E get(int index) //返回索引对应处的元素
-  E set(int index,E element) //修改指定位置的元素 ,并返回更改前的元素
-  ListIterator listIterator() //返回一个ListIterator
+  void add(int index,E element); //在指定的索引处添加一个元素，其后元素依次向后移一个单位;当使用									不存在的索引时，将出现索引越界异常;index小于等于size
+  E remove(int index); //删除索引对应处的元素,并返回被删除的元素
+  boolean remove(Object o);//移除指定的元素
+  E get(int index); //返回索引对应处的元素
+  E set(int index,E element); //修改指定位置的元素 ,并返回更改前的元素
+  ListIterator listIterator(); //返回一个ListIterator
   ```
 
   - 并发修改：使用迭代器遍历的同时集合在增减元素，称为并发修改,并发修改在普通的迭代器中是不被允许的，因为在开始生成迭代器时就已告知迭代器元素的总数，开始迭代后元素总数不可变。此时，可用`ListIterator`，此为List专有的迭代器，可以实现迭代的同时增减元素
 
+  - 迭代器成员方法
+
+    ```java
+    boolean hasNext(); //若下面有元素，返回true
+    E next(); //返回迭代中的下一个元素。
+    ```
+
+  - `ListIterator`特有方法
+
+    ```java
+    
+    ```
+
   - LinkedList特有的方法
 
     ```java
-    void addFirst(E e) //从开头插入元素
-    void addLast(E e) //从结尾插入元素
-    E getFirst() //取得第一个元素
-    E getLast() //取得最后一个元素
-    E removeFirst() //删除第一个元素
-    E removeLast() //删除最后一个元素
+    void addFirst(E e); //从开头插入元素
+    void addLast(E e); //从结尾插入元素
+    E getFirst(); //取得第一个元素
+    E getLast(); //取得最后一个元素
+    E removeFirst(); //删除第一个元素
+    E removeLast(); //删除最后一个元素
     ```
 
 - Set
@@ -938,7 +952,7 @@ enum <枚举类名>{
 ```java
 static <T> void sort(List<T> list);  /*对传入的List进行排序，要求传入的List中所存的对象
     										的类已实现Comparable接口，即对象具备可比较性*/
-static <T> int binarySearch(List<T> list,T key); /*以二分查找的算法查找List中对应元素														并返回其索引，若不存在该元素，则返回														其可以插入的点的负索引-1(-插入点-1)*/
+static <T> int binarySearch(List<T> list,T key); /*以二分查找的算法查找List中对应元素														并返回其索引，若不存在该元素，则返回,其可以插入的点的负索引-1(-插入点-1)*/
 static <T> T max(collection<?> coll); //获取集合元素的最大值
 static void reverse(List<?> list);  //反转集合顺序
 static void shuffle(List<?> list);  //随机打乱集合中元素顺序
@@ -955,17 +969,17 @@ static void shuffle(List<?> list);  //随机打乱集合中元素顺序
 - Map接口的方法
 
 ```java
-V put(K key,V value) //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并返回原来的值
-V get(Object key) //根据提供的键来返回值，若键不存在，则返回null
-void clear()  //移除所有的元素，清空集合
-V remove(Object key)  //根据键移除键值对元素，并返回被移除的值
-boolean containsKey(Object key)  //判断对应的键是否在集合中存在
-boolean containsValue(Object value) //判断对应的值是否在集合中存在
-boolean isEmpty()  //判断集合是否为空
-Set<K> KetSet()  //获取Map中所有键的Set集合
-Collection<V> values() //获取Map中所有值得Collection集合
-Set<Map.Entry<K,V>> entrySet() //将Map中的键值对作为一个对象，获取Map的键值对Set
-int size()  //返回Map的长度，即键值对个数
+V put(K key,V value); //根据键值对添加元素，如果键不存在，则直接存储并返回null,若键存在，则覆盖原值，并返回原来的值
+V get(Object key); //根据提供的键来返回值，若键不存在，则返回null
+void clear();  //移除所有的元素，清空集合
+V remove(Object key);  //根据键移除键值对元素，并返回被移除的值
+boolean containsKey(Object key);  //判断对应的键是否在集合中存在
+boolean containsValue(Object value); //判断对应的值是否在集合中存在
+boolean isEmpty();  //判断集合是否为空
+Set<K> KetSet();  //获取Map中所有键的Set集合
+Collection<V> values(); //获取Map中所有值得Collection集合
+Set<Entry<K,V>> entrySet(); //将Map中的键值对作为一个对象，获取Map的键值对Set
+int size();  //返回Map的长度，即键值对个数
 ```
 
 - HashMap和Hashtable的区别
@@ -976,29 +990,33 @@ int size()  //返回Map的长度，即键值对个数
 
 ### 泛型的概述和使用
 
-- 集合泛型
+> 
 
-​       定义：集合泛型是指在定义集合时，在集合名前类型名后以<>标注此后集合内将存储的数据的类型，加了泛型的集合   将只能存储泛型内指定的对象。泛型内必须是引用数据类型。
+- 泛型的优点：1、提高安全性，将运行期错误转到编译期
+
+​						       2、省去强转麻烦
+
+#### 集合泛型的概述和使用
+
+- 定义：集合泛型是指在定义集合时，在集合名前类型名后以<>标注此后集合内将存储的数据的类型，加了泛型的集合   将只能存储泛型内指定的对象。泛型内必须是引用数据类型。
 
 ```java
   Collection<String> arr = new ArrayList<>();
 ```
 
-  泛型的优点：1、提高安全性，将运行期错误转到编译期
 
-​						 2、省去强转麻烦
 
-  - 泛型类的概述和定义
+#### 泛型类的概述和使用
 
-    将泛型定义在类上：
+将泛型定义在类上：
 
-    ```java
-    public class 类名<泛型类型>
-    ```
+```java
+public class 类名<T> {}
+```
 
-    泛型必须是引用类型 ,泛型可以替代类中定义的成员变量数据类型，使之可以在创建对象时再定义类内的成员变量数据类型
+泛型必须是引用类型 ,泛型可以替代类中定义的成员变量数据类型，使之可以在创建对象时再定义类内的成员变量数据类型
 
-- 泛型接口的概述和定义
+#### 泛型接口的概述和使用
 
 
 
@@ -1591,25 +1609,24 @@ try{
       ServletContext sc = getServletContext();
       ```
    3. sc对象的各成员方法
-     
+   
 
       - 使用以下方法可获取到xml文件中的param-value值
-      
+   
       ```java
 String getInitParameter("<param-name>") //该方法返回上面的param-value值
       ```
 
       - 使用以下方法可以获取指定文件的绝对路径
-      
+   
       ```java
 String getRealPath("<指定文件的相对路径>") //以指定文件的相对路径获取绝对路径
       ```
-      
+   
       - 使用以下方法可以将指定文件转成流
       ```java
       InputStream getResourceAsStream("<指定文件的相对路径>")
       ```
-      
    
 6. HttpRequest与HttpResponnse
 
